@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- ===================== ROS2 Control 核心插件 ===================== -->
+    <gazebo>
+        <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+            <robot_param>robot_description</robot_param>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+            <use_sim_time>true</use_sim_time>
+        </plugin>
+    </gazebo>
+
+    <!-- ===================== ROS2 标准 IMU 传感器 ===================== -->
+    <gazebo reference="imu_link">
+        <gravity>true</gravity>
+        <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>500</update_rate>
+            <visualize>true</visualize>
+            <plugin filename="libgazebo_ros_imu.so" name="imu_plugin">
+                <ros>
+                    <namespace>/go1</namespace>
+                    <remapping>imu:=sensors/imu</remapping>
+                </ros>
+                <update_rate>500</update_rate>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <!-- ===================== 足端接触/力传感器（ROS2 标准） ===================== -->
+    <gazebo reference="FL_foot">
+        <sensor name="FL_foot_ft" type="force_torque">
+            <update_rate>500</update_rate>
+            <always_on>true</always_on>
+            <plugin filename="libgazebo_ros_force_torque.so" name="FL_foot_ft_plugin">
+                <ros>
+                    <namespace>/go1</namespace>
+                    <remapping>wrench:=sensors/FL_foot_wrench</remapping>
+                </ros>
+            </plugin>
+        </sensor>
+    </gazebo>
+    <gazebo reference="FR_foot">
+        <sensor name="FR_foot_ft" type="force_torque">
+            <update_rate>500</update_rate>
+            <always_on>true</always_on>
+            <plugin filename="libgazebo_ros_force_torque.so" name="FR_foot_ft_plugin">
+                <ros>
+                    <namespace>/go1</namespace>
+                    <remapping>wrench:=sensors/FR_foot_wrench</remapping>
+                </ros>
+            </plugin>
+        </sensor>
+    </gazebo>
+    <gazebo reference="RL_foot">
+        <sensor name="RL_foot_ft" type="force_torque">
+            <update_rate>500</update_rate>
+            <always_on>true</always_on>
+            <plugin filename="libgazebo_ros_force_torque.so" name="RL_foot_ft_plugin">
+                <ros>
+                    <namespace>/go1</namespace>
+                    <remapping>wrench:=sensors/RL_foot_wrench</remapping>
+                </ros>
+            </plugin>
+        </sensor>
+    </gazebo>
+    <gazebo reference="RR_foot">
+        <sensor name="RR_foot_ft" type="force_torque">
+            <update_rate>500</update_rate>
+            <always_on>true</always_on>
+            <plugin filename="libgazebo_ros_force_torque.so" name="RR_foot_ft_plugin">
+                <ros>
+                    <namespace>/go1</namespace>
+                    <remapping>wrench:=sensors/RR_foot_wrench</remapping>
+                </ros>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <!-- ===================== 物理材质/摩擦系数（保留原样） ===================== -->
+    <gazebo reference="base">
+        <material>Gazebo/Green</material>
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <gazebo reference="trunk">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+
+    <gazebo reference="imu_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <!-- FL leg -->
+    <gazebo reference="FL_hip">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="FL_thigh">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+    <gazebo reference="FL_calf">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+    </gazebo>
+    <gazebo reference="FL_foot">
+        <mu1>0.6</mu1>
+        <mu2>0.6</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+
+    <!-- FR leg -->
+    <gazebo reference="FR_hip">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="FR_thigh">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+    <gazebo reference="FR_calf">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+    </gazebo>
+    <gazebo reference="FR_foot">
+        <mu1>0.6</mu1>
+        <mu2>0.6</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+
+    <!-- RL leg -->
+    <gazebo reference="RL_hip">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="RL_thigh">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+    <gazebo reference="RL_calf">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+    </gazebo>
+    <gazebo reference="RL_foot">
+        <mu1>0.6</mu1>
+        <mu2>0.6</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+
+    <!-- RR leg -->
+    <gazebo reference="RR_hip">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="RR_thigh">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+    <gazebo reference="RR_calf">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>1</self_collide>
+    </gazebo>
+    <gazebo reference="RR_foot">
+        <mu1>0.6</mu1>
+        <mu2>0.6</mu2>
+        <self_collide>1</self_collide>
+        <material>Gazebo/DarkGrey</material>
+        <kp  value="1000000.0"/>
+        <kd  value="1.0"/>
+    </gazebo>
+
+</robot>

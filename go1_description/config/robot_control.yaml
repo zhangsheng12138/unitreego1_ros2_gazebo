@@ -1,0 +1,75 @@
+# ROS2 Control 配置文件 for Unitree Go1
+# 适配 gazebo_ros2_control + 力矩控制 (EffortControl)
+# 所有【可修改参数】已标注用途与对齐接口
+
+gazebo_ros2_control:
+  ros__parameters:
+
+    # ====================== 1. 关节状态广播器（必选，不可删除） ======================
+    # 作用：读取所有关节的 position/velocity/effort，并发布 /joint_states 话题
+    # 对齐接口：robot_state_publisher + RViz + 上层控制器
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # ====================== 2. 全局力矩控制器（核心可修改） ======================
+    # 控制器名称：可自定义，如 go1_torque_controller
+    go1_effort_controller:
+      # 类型固定：关节组力矩控制器（对应 EffortJointInterface）
+      type: effort_controllers/JointGroupEffortController
+
+      # ====================== 【可修改】关节列表 ======================
+      # 用途：声明要控制的关节，必须与 URDF 中的 <joint> 名称完全一致
+      # 对齐接口：URDF + hardware_interface/effort
+      joints:
+        - FR_hip_joint
+        - FR_thigh_joint
+        - FR_calf_joint
+        - FL_hip_joint
+        - FL_thigh_joint
+        - FL_calf_joint
+        - RR_hip_joint
+        - RR_thigh_joint
+        - RR_calf_joint
+        - RL_hip_joint
+        - RL_thigh_joint
+        - RL_calf_joint
+
+      # ====================== 【核心可修改】PID 力矩控制参数 ======================
+      # 用途：力矩环的位置跟踪 PID（仿真/真机稳定性关键）
+      # 对齐接口：effort_controllers → PID计算 → 输出力矩
+      gains:
+        # 前右腿 FR
+        FR_hip_joint:
+          p: 100.0        # 【可修改】比例增益 → 位置误差→力矩
+          i: 0.0          # 【可修改】积分增益 → 消除静差（四足一般设0）
+          d: 5.0          # 【可修改】微分增益 → 阻尼（抑制抖动）
+        FR_thigh_joint: { p: 100.0, i: 0.0, d: 5.0 }
+        FR_calf_joint:  { p: 100.0, i: 0.0, d: 5.0 }
+
+        # 前左腿 FL
+        FL_hip_joint:   { p: 100.0, i: 0.0, d: 5.0 }
+        FL_thigh_joint: { p: 100.0, i: 0.0, d: 5.0 }
+        FL_calf_joint:  { p: 100.0, i: 0.0, d: 5.0 }
+
+        # 后右腿 RR
+        RR_hip_joint:   { p: 100.0, i: 0.0, d: 5.0 }
+        RR_thigh_joint: { p: 100.0, i: 0.0, d: 5.0 }
+        RR_calf_joint:  { p: 100.0, i: 0.0, d: 5.0 }
+
+        # 后左腿 RL
+        RL_hip_joint:   { p: 100.0, i: 0.0, d: 5.0 }
+        RL_thigh_joint: { p: 100.0, i: 0.0, d: 5.0 }
+        RL_calf_joint:  { p: 100.0, i: 0.0, d: 5.0 }
+
+      # ====================== 【固定】命令接口（力矩控制） ======================
+      # 用途：告诉 ros2_control 该控制器发送【力矩指令】
+      # 对齐接口：hardware_interface::HW_IF_EFFORT
+      command_interfaces:
+        - effort
+
+      # ====================== 【固定】状态接口 ======================
+      # 用途：读取关节【位置】和【速度】用于闭环
+      # 对齐接口：hardware_interface 反馈接口
+      state_interfaces:
+        - position
+        - velocity
