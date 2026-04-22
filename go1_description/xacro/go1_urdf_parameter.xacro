@@ -1,0 +1,248 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  
+  <!-- 常量定义 -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="stick_mass" value="0.00001"/>
+  
+  <!-- 物理属性 -->
+  <xacro:property name="trunk_mu1" value="0.2"/>
+  <xacro:property name="trunk_mu2" value="0.2"/>
+  <xacro:property name="trunk_kp" value="1000000.0"/>
+  <xacro:property name="trunk_kd" value="1.0"/>
+  
+  <xacro:property name="leg_mu1" value="0.2"/>
+  <xacro:property name="leg_mu2" value="0.2"/>
+  <xacro:property name="leg_kp" value="1000000.0"/>
+  <xacro:property name="leg_kd" value="1.0"/>
+  
+  <xacro:property name="foot_mu1" value="0.6"/>
+  <xacro:property name="foot_mu2" value="0.6"/>
+  <xacro:property name="foot_kp" value="1000000.0"/>
+  <xacro:property name="foot_kd" value="1.0"/>
+  
+  <!-- 传感器配置 -->
+  <xacro:property name="imu_update_rate" value="1000"/>
+  <xacro:property name="imu_visualize" value="true"/>
+  
+  <xacro:property name="camera_update_rate" value="16"/>
+  <xacro:property name="camera_horizontal_fov" value="2.094"/>
+  <xacro:property name="camera_image_width" value="928"/>
+  <xacro:property name="camera_image_height" value="800"/>
+  <xacro:property name="camera_near_clip" value="0.1"/>
+  <xacro:property name="camera_far_clip" value="5"/>
+  <xacro:property name="camera_min_depth" value="0.1"/>
+  <xacro:property name="camera_max_depth" value="5.0"/>
+  
+  <xacro:property name="foot_contact_update_rate" value="100"/>
+  
+  <!-- 关节配置 -->
+  <xacro:property name="hip_effort_limit" value="23.7"/>
+  <xacro:property name="hip_lower_limit" value="-0.863"/>
+  <xacro:property name="hip_upper_limit" value="0.863"/>
+  <xacro:property name="hip_velocity_limit" value="30.1"/>
+  <xacro:property name="hip_damping" value="0.0"/>
+  <xacro:property name="hip_friction" value="0.0"/>
+  
+  <xacro:property name="thigh_effort_limit" value="23.7"/>
+  <xacro:property name="thigh_lower_limit" value="-0.686"/>
+  <xacro:property name="thigh_upper_limit" value="4.501"/>
+  <xacro:property name="thigh_velocity_limit" value="30.1"/>
+  <xacro:property name="thigh_damping" value="0.0"/>
+  <xacro:property name="thigh_friction" value="0.0"/>
+  
+  <xacro:property name="calf_effort_limit" value="35.55"/>
+  <xacro:property name="calf_lower_limit" value="-2.818"/>
+  <xacro:property name="calf_upper_limit" value="-0.888"/>
+  <xacro:property name="calf_velocity_limit" value="20.06"/>
+  <xacro:property name="calf_damping" value="0.0"/>
+  <xacro:property name="calf_friction" value="0.0"/>
+  
+  <!-- 质量配置 -->
+  <xacro:property name="base_mass" value="0.0001"/>
+  <xacro:property name="trunk_mass" value="5.204"/>
+  <xacro:property name="imu_link_mass" value="0.001"/>
+  <xacro:property name="hip_mass" value="0.591"/>
+  <xacro:property name="hip_rotor_mass" value="0.089"/>
+  <xacro:property name="thigh_mass" value="0.92"/>
+  <xacro:property name="thigh_rotor_mass" value="0.089"/>
+  <xacro:property name="calf_mass" value="0.135862"/>
+  <xacro:property name="calf_rotor_mass" value="0.089"/>
+  <xacro:property name="foot_mass" value="0.06"/>
+  <xacro:property name="depth_camera_mass" value="0.00001"/>
+  <xacro:property name="ultrasound_mass" value="0.00001"/>
+  
+  <!-- 惯性配置 -->
+  <xacro:property name="base_ixx" value="0.0001"/>
+  <xacro:property name="base_ixy" value="0.0"/>
+  <xacro:property name="base_ixz" value="0.0"/>
+  <xacro:property name="base_iyy" value="0.0001"/>
+  <xacro:property name="base_iyz" value="0.0"/>
+  <xacro:property name="base_izz" value="0.0001"/>
+  
+  <xacro:property name="trunk_ixx" value="0.0168128557"/>
+  <xacro:property name="trunk_ixy" value="-0.0002296769"/>
+  <xacro:property name="trunk_ixz" value="-0.0002945293"/>
+  <xacro:property name="trunk_iyy" value="0.063009565"/>
+  <xacro:property name="trunk_iyz" value="-4.18731e-05"/>
+  <xacro:property name="trunk_izz" value="0.0716547275"/>
+  
+  <xacro:property name="hip_ixx" value="0.000334008405"/>
+  <xacro:property name="hip_ixy" value="-0.000010826066"/>
+  <xacro:property name="hip_ixz" value="0.000001290732"/>
+  <xacro:property name="hip_iyy" value="0.000619101213"/>
+  <xacro:property name="hip_iyz" value="0.000001643194"/>
+  <xacro:property name="hip_izz" value="0.00040057614"/>
+  
+  <xacro:property name="hip_rotor_ixx" value="0.000111842"/>
+  <xacro:property name="hip_rotor_ixy" value="0.0"/>
+  <xacro:property name="hip_rotor_ixz" value="0.0"/>
+  <xacro:property name="hip_rotor_iyy" value="0.000059647"/>
+  <xacro:property name="hip_rotor_iyz" value="0.0"/>
+  <xacro:property name="hip_rotor_izz" value="0.000059647"/>
+  
+  <xacro:property name="thigh_ixx" value="0.004431760472"/>
+  <xacro:property name="thigh_ixy" value="0.000057496807"/>
+  <xacro:property name="thigh_ixz" value="-0.000218457134"/>
+  <xacro:property name="thigh_iyy" value="0.004485671726"/>
+  <xacro:property name="thigh_iyz" value="0.000572001265"/>
+  <xacro:property name="thigh_izz" value="0.000740309489"/>
+  
+  <xacro:property name="thigh_rotor_ixx" value="0.000059647"/>
+  <xacro:property name="thigh_rotor_ixy" value="0.0"/>
+  <xacro:property name="thigh_rotor_ixz" value="0.0"/>
+  <xacro:property name="thigh_rotor_iyy" value="0.000111842"/>
+  <xacro:property name="thigh_rotor_iyz" value="0.0"/>
+  <xacro:property name="thigh_rotor_izz" value="0.000059647"/>
+  
+  <xacro:property name="calf_ixx" value="0.001088793059"/>
+  <xacro:property name="calf_ixy" value="-0.000000255679"/>
+  <xacro:property name="calf_ixz" value="0.000007117814"/>
+  <xacro:property name="calf_iyy" value="0.001100428748"/>
+  <xacro:property name="calf_iyz" value="0.000002077264"/>
+  <xacro:property name="calf_izz" value="0.000024787446"/>
+  
+  <xacro:property name="calf_rotor_ixx" value="0.000059647"/>
+  <xacro:property name="calf_rotor_ixy" value="0.0"/>
+  <xacro:property name="calf_rotor_ixz" value="0.0"/>
+  <xacro:property name="calf_rotor_iyy" value="0.000111842"/>
+  <xacro:property name="calf_rotor_iyz" value="0.0"/>
+  <xacro:property name="calf_rotor_izz" value="0.000059647"/>
+  
+  <xacro:property name="foot_ixx" value="0.0000048"/>
+  <xacro:property name="foot_ixy" value="0.0"/>
+  <xacro:property name="foot_ixz" value="0.0"/>
+  <xacro:property name="foot_iyy" value="0.0000048"/>
+  <xacro:property name="foot_iyz" value="0.0"/>
+  <xacro:property name="foot_izz" value="0.0000048"/>
+  
+  <xacro:property name="depth_camera_ixx" value="1e-6"/>
+  <xacro:property name="depth_camera_ixy" value="0.0"/>
+  <xacro:property name="depth_camera_ixz" value="0.0"/>
+  <xacro:property name="depth_camera_iyy" value="1e-6"/>
+  <xacro:property name="depth_camera_iyz" value="0.0"/>
+  <xacro:property name="depth_camera_izz" value="1e-6"/>
+  
+  <xacro:property name="ultrasound_ixx" value="1e-6"/>
+  <xacro:property name="ultrasound_ixy" value="0.0"/>
+  <xacro:property name="ultrasound_ixz" value="0.0"/>
+  <xacro:property name="ultrasound_iyy" value="1e-6"/>
+  <xacro:property name="ultrasound_iyz" value="0.0"/>
+  <xacro:property name="ultrasound_izz" value="1e-6"/>
+  
+  <!-- 几何尺寸 -->
+  <xacro:property name="trunk_collision_size" value="0.3762 0.0935 0.114"/>
+  <xacro:property name="trunk_width" value="0.0935"/>
+  <xacro:property name="trunk_length" value="0.3762"/>
+  <xacro:property name="trunk_height" value="0.114"/>
+  
+  <xacro:property name="hip_cylinder_length" value="0.04"/>
+  <xacro:property name="hip_cylinder_radius" value="0.046"/>
+  
+  <xacro:property name="thigh_cylinder_length" value="0.213"/>
+  <xacro:property name="thigh_cylinder_radius" value="0.0245"/>
+  <xacro:property name="thigh_width" value="0.0245"/>
+  <xacro:property name="thigh_height" value="0.034"/>
+  
+  <xacro:property name="calf_cylinder_length" value="0.213"/>
+  <xacro:property name="calf_cylinder_radius" value="0.016"/>
+  <xacro:property name="calf_width" value="0.016"/>
+  <xacro:property name="calf_height" value="0.016"/>
+  
+  <xacro:property name="foot_sphere_radius" value="0.02"/>
+  
+  <xacro:property name="imu_link_box_size" value="0.001 0.001 0.001"/>
+  
+  <xacro:property name="depth_camera_box_size" value="0.001 0.001 0.001"/>
+  
+  <xacro:property name="ultrasound_box_size" value="0.001 0.001 0.001"/>
+  
+  <!-- 位置配置 -->
+  <xacro:property name="FR_hip_joint_origin" value="0.1881 -0.04675 0"/>
+  <xacro:property name="FR_thigh_joint_origin" value="0 -0.08 0"/>
+  <xacro:property name="FR_calf_joint_origin" value="0 0 -0.213"/>
+  <xacro:property name="FR_foot_joint_origin" value="0 0 -0.213"/>
+  
+  <xacro:property name="FL_hip_joint_origin" value="0.1881 0.04675 0"/>
+  <xacro:property name="FL_thigh_joint_origin" value="0 0.08 0"/>
+  <xacro:property name="FL_calf_joint_origin" value="0 0 -0.213"/>
+  <xacro:property name="FL_foot_joint_origin" value="0 0 -0.213"/>
+  
+  <xacro:property name="RR_hip_joint_origin" value="-0.1881 -0.04675 0"/>
+  <xacro:property name="RR_thigh_joint_origin" value="0 -0.08 0"/>
+  <xacro:property name="RR_calf_joint_origin" value="0 0 -0.213"/>
+  <xacro:property name="RR_foot_joint_origin" value="0 0 -0.213"/>
+  
+  <xacro:property name="RL_hip_joint_origin" value="-0.1881 0.04675 0"/>
+  <xacro:property name="RL_thigh_joint_origin" value="0 0.08 0"/>
+  <xacro:property name="RL_calf_joint_origin" value="0 0 -0.213"/>
+  <xacro:property name="RL_foot_joint_origin" value="0 0 -0.213"/>
+  
+  <xacro:property name="floating_base_position" value="0 0 0"/>
+  <xacro:property name="imu_joint_position" value="-0.01592 -0.06659 -0.00617"/>
+  
+  <xacro:property name="trunk_com" value="0.0223 0.002 -0.0005"/>
+  <xacro:property name="hip_com" value="-0.005657 -0.008752 -0.000102"/>
+  <xacro:property name="hip_rotor_com" value="0 0 0"/>
+  <xacro:property name="thigh_com" value="-0.003342 -0.018054 -0.033451"/>
+  <xacro:property name="thigh_rotor_com" value="0 0 0"/>
+  <xacro:property name="calf_com" value="0.006197 0.001408 -0.116695"/>
+  <xacro:property name="calf_rotor_com" value="0 0 0"/>
+  
+  <xacro:property name="leg_offset_x" value="0.1881"/>
+  <xacro:property name="leg_offset_y" value="0.04675"/>
+  
+  <xacro:property name="depth_camera_face" value="0.2785 0.0125 0.0167"/>
+  <xacro:property name="depth_camera_chin" value="0.2522 0.0125 -0.0436"/>
+  <xacro:property name="depth_camera_left" value="-0.066 0.082 -0.0176"/>
+  <xacro:property name="depth_camera_right" value="-0.041 -0.082 -0.0176"/>
+  <xacro:property name="depth_camera_rearDown" value="-0.0825 0.0125 -0.04365"/>
+  
+  <xacro:property name="ultrasound_left" value="-0.0535 0.0826 0.00868"/>
+  <xacro:property name="ultrasound_right" value="-0.0535 -0.0826 0.00868"/>
+  <xacro:property name="ultrasound_face" value="0.2747 0.0 -0.0088"/>
+  
+  <xacro:property name="hip_rotor_offset_x" value="0.11215"/>
+  <xacro:property name="hip_rotor_offset_y" value="0.04675"/>
+  <xacro:property name="hip_rotor_offset_z" value="0.0"/>
+  
+  <xacro:property name="thigh_rotor_offset_x" value="0.0"/>
+  <xacro:property name="thigh_rotor_offset_y" value="-0.00015"/>
+  <xacro:property name="thigh_rotor_offset_z" value="0.0"/>
+  
+  <xacro:property name="calf_rotor_offset_x" value="0.0"/>
+  <xacro:property name="calf_rotor_offset_y" value="-0.03235"/>
+  <xacro:property name="calf_rotor_offset_z" value="0.0"/>
+  
+  <!-- 调试模式配置 -->
+  <xacro:property name="debug_enabled" value="false"/>
+  <xacro:property name="debug_world_joint_position" value="0 0 0"/>
+  
+  <!-- 话题配置 -->
+  <xacro:property name="topic_force" value="/force"/>
+  <xacro:property name="topic_imu" value="/imu"/>
+  <xacro:property name="topic_camera_color" value="color/image_raw"/>
+  <xacro:property name="topic_camera_depth" value="depth/image_raw"/>
+  <xacro:property name="topic_camera_points" value="points"/>
+  
+</robot>

@@ -39,7 +39,7 @@
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
       <robot_param>robot_description</robot_param>
       <robot_param_node>robot_state_publisher</robot_param_node>
-      <parameters>$(find go1_description)/config/ros2_control.yaml</parameters>
+      <parameters>$(find go1_description)/config/robot_control.yaml</parameters>
     </plugin>
   </gazebo>
 
@@ -669,30 +669,30 @@
   <transmission name="FR_hip_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FR_hip_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="FR_hip_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="FR_thigh_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FR_thigh_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="FR_thigh_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="FR_calf_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FR_calf_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="FR_calf_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -700,30 +700,30 @@
   <transmission name="FL_hip_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FL_hip_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="FL_hip_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="FL_thigh_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FL_thigh_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="FL_thigh_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="FL_calf_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FL_calf_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="FL_calf_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -731,30 +731,30 @@
   <transmission name="RR_hip_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="RR_hip_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="RR_hip_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="RR_thigh_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="RR_thigh_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="RR_thigh_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="RR_calf_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="RR_calf_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="RR_calf_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -762,30 +762,30 @@
   <transmission name="RL_hip_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="RL_hip_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="RL_hip_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="RL_thigh_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="RL_thigh_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="RL_thigh_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
   <transmission name="RL_calf_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="RL_calf_joint">
-      <hardwareInterface>effort_controllers/effort_interface</hardwareInterface>
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
     </joint>
     <actuator name="RL_calf_motor">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>

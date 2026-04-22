@@ -1,0 +1,22 @@
+<!--
+控制器插件配置文件
+
+该文件用于配置Go1机器人的控制器插件，定义了控制器的名称、类型和基类。
+
+元素说明：
+- library: 定义控制器库的路径
+- class: 定义控制器类
+  - name: 控制器的名称，格式为包名/控制器名
+  - type: 控制器的C++类型
+  - base_class_type: 控制器的基类类型
+  - description: 控制器的描述
+-->
+
+<library path="lib/libgo1_controller">
+  <class name="go1_controller/JointController" 
+         type="go1_controller::JointController" 
+         base_class_type="controller_interface::ControllerInterface">
+    <description>Go1机器人的关节控制器，用于控制机器人的各个关节</description>
+  </class>
+</library>
+

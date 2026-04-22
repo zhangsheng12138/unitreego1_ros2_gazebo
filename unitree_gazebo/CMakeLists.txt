@@ -1,12 +1,13 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.16)
 project(unitree_gazebo)
 
-# C++17 标准（ROS2 必需）
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# ======================= ROS2 依赖包 =======================
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -14,21 +15,22 @@ find_package(geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(gazebo_ros REQUIRED)
-find_package(unitree_legged_msgs REQUIRED)
+find_package(go1_controller REQUIRED)
 
-# ======================= Gazebo 依赖 =======================
 find_package(gazebo REQUIRED)
+find_package(ignition-math6 REQUIRED)
 
-# ======================= 头文件目录 =======================
 include_directories(
   include
   ${GAZEBO_INCLUDE_DIRS}
+  ${ignition-math6_INCLUDE_DIRS}
 )
 
-link_directories(${GAZEBO_LIBRARY_DIRS})
+link_directories(
+  ${GAZEBO_LIBRARY_DIRS}
+  ${ignition-math6_LIBRARY_DIRS}
+)
 
-# ======================= 编译 Gazebo 插件 =======================
-# 足端接触检测插件
 add_library(unitreeFootContactPlugin SHARED
   plugin/foot_contact_plugin.cc
 )
@@ -37,13 +39,15 @@ ament_target_dependencies(unitreeFootContactPlugin
   std_msgs
   geometry_msgs
   gazebo_ros
-  unitree_legged_msgs
+  go1_controller
 )
 target_link_libraries(unitreeFootContactPlugin
   ${GAZEBO_LIBRARIES}
+  ${ignition-math6_LIBRARIES}
+  gazebo_sensors
+  gazebo_common
 )
 
-# 力可视化插件
 add_library(unitreeDrawForcePlugin SHARED
   plugin/draw_force_plugin.cc
 )
@@ -52,13 +56,15 @@ ament_target_dependencies(unitreeDrawForcePlugin
   std_msgs
   geometry_msgs
   gazebo_ros
-  unitree_legged_msgs
+  go1_controller
 )
 target_link_libraries(unitreeDrawForcePlugin
   ${GAZEBO_LIBRARIES}
+  ${ignition-math6_LIBRARIES}
+  gazebo_rendering
+  gazebo_common
 )
 
-# ======================= 安装 =======================
 install(TARGETS
   unitreeFootContactPlugin
   unitreeDrawForcePlugin
@@ -67,20 +73,26 @@ install(TARGETS
   RUNTIME DESTINATION bin
 )
 
-# 安装 world、模型、launch 文件
 install(DIRECTORY
-  worlds/
-  DESTINATION share/${PROJECT_NAME}/worlds
+  config
+  worlds
+  launch
+  src
+  DESTINATION share/${PROJECT_NAME}
 )
 
-install(DIRECTORY
-  launch/
-  DESTINATION share/${PROJECT_NAME}/launch
+
+
+# 安装Python脚本
+install(PROGRAMS
+  src/env.py
+  src/check_gazebo_ready
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-# 测试
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  set(ament_cmake_copyright_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
 

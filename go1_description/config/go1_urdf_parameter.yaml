@@ -1,0 +1,268 @@
+# Go1机器人URDF参数配置文件
+# 可修改的全局参数
+
+# 常量定义
+constants:
+  PI: 3.1415926535897931
+  stick_mass: 0.00001
+
+# 物理属性
+physics:
+  # 躯干物理参数
+  trunk:
+    mu1: 0.2
+    mu2: 0.2
+    kp: 1000000.0
+    kd: 1.0
+  # 腿部物理参数
+  leg:
+    mu1: 0.2
+    mu2: 0.2
+    kp: 1000000.0
+    kd: 1.0
+  # 足部物理参数
+  foot:
+    mu1: 0.6
+    mu2: 0.6
+    kp: 1000000.0
+    kd: 1.0
+
+# 传感器配置
+sensors:
+  # IMU配置
+  imu:
+    update_rate: 1000
+    visualize: true
+  # 深度相机配置
+  camera:
+    update_rate: 16
+    horizontal_fov: 2.094
+    image_width: 928
+    image_height: 800
+    near_clip: 0.1
+    far_clip: 5
+    min_depth: 0.1
+    max_depth: 5.0
+  # 足端接触传感器配置
+  foot_contact:
+    update_rate: 100
+
+# 关节配置
+joints:
+  # 髋关节配置
+  hip:
+    effort_limit: 23.7
+    lower_limit: -0.863
+    upper_limit: 0.863
+    velocity_limit: 30.1
+    damping: 0.0
+    friction: 0.0
+  # 大腿关节配置
+  thigh:
+    effort_limit: 23.7
+    lower_limit: -0.686
+    upper_limit: 4.501
+    velocity_limit: 30.1
+    damping: 0.0
+    friction: 0.0
+  # 小腿关节配置
+  calf:
+    effort_limit: 35.55
+    lower_limit: -2.818
+    upper_limit: -0.888
+    velocity_limit: 20.06
+    damping: 0.0
+    friction: 0.0
+
+# 质量配置
+masses:
+  base: 0.0001
+  trunk: 5.204
+  imu_link: 0.001
+  hip: 0.591
+  hip_rotor: 0.089
+  thigh: 0.92
+  thigh_rotor: 0.089
+  calf: 0.135862
+  calf_rotor: 0.089
+  foot: 0.06
+  depth_camera: 0.00001
+  ultrasound: 0.00001
+
+# 惯性配置
+inertia:
+  base:
+    ixx: 0.0001
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 0.0001
+    iyz: 0.0
+    izz: 0.0001
+  trunk:
+    ixx: 0.0168128557
+    ixy: -0.0002296769
+    ixz: -0.0002945293
+    iyy: 0.063009565
+    iyz: -4.18731e-05
+    izz: 0.0716547275
+  hip:
+    ixx: 0.000334008405
+    ixy: -0.000010826066
+    ixz: 0.000001290732
+    iyy: 0.000619101213
+    iyz: 0.000001643194
+    izz: 0.00040057614
+  hip_rotor:
+    ixx: 0.000111842
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 0.000059647
+    iyz: 0.0
+    izz: 0.000059647
+  thigh:
+    ixx: 0.004431760472
+    ixy: 0.000057496807
+    ixz: -0.000218457134
+    iyy: 0.004485671726
+    iyz: 0.000572001265
+    izz: 0.000740309489
+  thigh_rotor:
+    ixx: 0.000059647
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 0.000111842
+    iyz: 0.0
+    izz: 0.000059647
+  calf:
+    ixx: 0.001088793059
+    ixy: -0.000000255679
+    ixz: 0.000007117814
+    iyy: 0.001100428748
+    iyz: 0.000002077264
+    izz: 0.000024787446
+  calf_rotor:
+    ixx: 0.000059647
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 0.000111842
+    iyz: 0.0
+    izz: 0.000059647
+  foot:
+    ixx: 0.0000048
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 0.0000048
+    iyz: 0.0
+    izz: 0.0000048
+  depth_camera:
+    ixx: 1e-6
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 1e-6
+    iyz: 0.0
+    izz: 1e-6
+  ultrasound:
+    ixx: 1e-6
+    ixy: 0.0
+    ixz: 0.0
+    iyy: 1e-6
+    iyz: 0.0
+    izz: 1e-6
+
+# 几何尺寸
+geometry:
+  trunk:
+    collision_size: "0.3762 0.0935 0.114"
+    width: 0.0935
+    length: 0.3762
+    height: 0.114
+  hip:
+    cylinder_length: 0.04
+    cylinder_radius: 0.046
+  thigh:
+    cylinder_length: 0.213
+    cylinder_radius: 0.0245
+    width: 0.0245
+    height: 0.034
+  calf:
+    cylinder_length: 0.213
+    cylinder_radius: 0.016
+    width: 0.016
+    height: 0.016
+  foot:
+    sphere_radius: 0.02
+  imu_link:
+    box_size: "0.001 0.001 0.001"
+  depth_camera:
+    box_size: "0.001 0.001 0.001"
+  ultrasound:
+    box_size: "0.001 0.001 0.001"
+
+# 位置配置
+positions:
+  # 关节原点位置
+  joint_origin:
+    FR_hip_joint: "0.1881 -0.04675 0"
+    FR_thigh_joint: "0 -0.08 0"
+    FR_calf_joint: "0 0 -0.213"
+    FR_foot_joint: "0 0 -0.213"
+    FL_hip_joint: "0.1881 0.04675 0"
+    FL_thigh_joint: "0 0.08 0"
+    FL_calf_joint: "0 0 -0.213"
+    FL_foot_joint: "0 0 -0.213"
+    RR_hip_joint: "-0.1881 -0.04675 0"
+    RR_thigh_joint: "0 -0.08 0"
+    RR_calf_joint: "0 0 -0.213"
+    RR_foot_joint: "0 0 -0.213"
+    RL_hip_joint: "-0.1881 0.04675 0"
+    RL_thigh_joint: "0 0.08 0"
+    RL_calf_joint: "0 0 -0.213"
+    RL_foot_joint: "0 0 -0.213"
+  # 固定关节位置
+  fixed_joint:
+    floating_base: "0 0 0"
+    imu_joint: "-0.01592 -0.06659 -0.00617"
+  # 质心位置
+  com:
+    trunk: "0.0223 0.002 -0.0005"
+    hip: "-0.005657 -0.008752 -0.000102"
+    hip_rotor: "0 0 0"
+    thigh: "-0.003342 -0.018054 -0.033451"
+    thigh_rotor: "0 0 0"
+    calf: "0.006197 0.001408 -0.116695"
+    calf_rotor: "0 0 0"
+  # 腿部偏移量
+  leg_offset:
+    x: 0.1881
+    y: 0.04675
+  # 深度相机位置
+  depth_camera:
+    face: "0.2785 0.0125 0.0167"
+    chin: "0.2522 0.0125 -0.0436"
+    left: "-0.066 0.082 -0.0176"
+    right: "-0.041 -0.082 -0.0176"
+    rearDown: "-0.0825 0.0125 -0.04365"
+  # 超声波传感器位置
+  ultrasound:
+    left: "-0.0535 0.0826 0.00868"
+    right: "-0.0535 -0.0826 0.00868"
+    face: "0.2747 0.0 -0.0088"
+  # 转子偏移量
+  rotor_offset:
+    hip:
+      x: 0.11215
+      y: 0.04675
+      z: 0.0
+    thigh:
+      x: 0.0
+      y: -0.00015
+      z: 0.0
+    calf:
+      x: 0.0
+      y: -0.03235
+      z: 0.0
+
+# 调试模式配置
+debug:
+  enabled: false
+  world_joint_position: "0 0 0"

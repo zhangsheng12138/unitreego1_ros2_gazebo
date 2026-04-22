@@ -1,0 +1,508 @@
+# Go1 机器人关节检查 RViz 配置文件
+# 转换自 check_joint.rviz
+
+panels:
+  - class: rviz_common/Displays
+    help_height: 78
+    name: Displays
+    property_tree_widget:
+      expanded:
+        - /Global Options1
+        - /RobotModel1
+      splitter_ratio: 0.5
+    tree_height: 523
+  - class: rviz_common/Selection
+    name: Selection
+  - class: rviz_common/Tool Properties
+    expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    name: Tool Properties
+    splitter_ratio: 0.5886790156364441
+  - class: rviz_common/Views
+    expanded:
+      - /Current View1
+    name: Views
+    splitter_ratio: 0.5
+  - class: rviz_common/Time
+    name: Time
+    sync_mode: 0
+    sync_source: ""
+
+preferences:
+  prompt_save_on_exit: true
+
+toolbars:
+  tool_button_style: 2
+
+visualization_manager:
+  class: ""
+  displays:
+    # 地面网格
+    - alpha: 0.5
+      cell_size: 1
+      class: rviz_default_plugins/Grid
+      color: [160, 160, 164]
+      enabled: true
+      line_style:
+        line_width: 0.029999999329447746
+        value: Lines
+      name: Grid
+      normal_cell_count: 0
+      offset:
+        x: 0
+        y: 0
+        z: 0
+      plane: XY
+      plane_cell_count: 10
+      reference_frame: <Fixed Frame>
+      value: true
+
+    # 机器人模型显示
+    - alpha: 0.5
+      class: rviz_default_plugins/RobotModel
+      collision_enabled: false
+      enabled: true
+      links:
+        all_links_enabled: true
+        expand_joint_details: false
+        expand_link_details: false
+        expand_tree: false
+        link_tree_style: Links in Alphabetic Order
+        FL_calf:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FL_foot:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FL_hip:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FL_thigh:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FL_thigh_shoulder:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FR_calf:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FR_foot:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FR_hip:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FR_thigh:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        FR_thigh_shoulder:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RL_calf:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RL_foot:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RL_hip:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RL_thigh:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RL_thigh_shoulder:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RR_calf:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RR_foot:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RR_hip:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RR_thigh:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        RR_thigh_shoulder:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        base:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        camera_chin:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        camera_face:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        camera_laserscan_link_left:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_laserscan_link_right:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_left:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        camera_optical_chin:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_optical_face:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_optical_left:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_optical_rearDown:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_optical_right:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+        camera_rearDown:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        camera_right:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        imu_link:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        trunk:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        ultraSound_face:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        ultraSound_left:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+        ultraSound_right:
+          alpha: 1
+          show_axes: false
+          show_trail: false
+          value: true
+      name: RobotModel
+      robot_description: robot_description
+      tf_prefix: ""
+      update_interval: 0
+      value: true
+      visual_enabled: true
+
+    # 坐标系轴
+    - alpha: 1
+      class: rviz_default_plugins/Axes
+      enabled: false
+      length: 1
+      name: Axes
+      radius: 0.10000000149011612
+      reference_frame: <Fixed Frame>
+      show_trail: false
+      value: false
+
+    # TF 坐标变换
+    - class: rviz_default_plugins/TF
+      enabled: false
+      frame_timeout: 15
+      frames:
+        all_enabled: true
+      marker_alpha: 1
+      marker_scale: 1
+      name: TF
+      show_arrows: true
+      show_axes: true
+      show_names: true
+      tree: {}
+      update_interval: 0
+      value: false
+
+    # 相机点云 - 面部相机
+    - alpha: 1
+      autocompute_intensity_bounds: true
+      autocompute_value_bounds:
+        max_value: 10
+        min_value: -10
+        value: true
+      axis: Z
+      channel_name: intensity
+      class: rviz_default_plugins/PointCloud2
+      color: [255, 255, 255]
+      color_transformer: RGB8
+      decay_time: 0
+      enabled: false
+      invert_rainbow: false
+      max_color: [255, 255, 255]
+      min_color: [0, 0, 0]
+      name: PointCloud2
+      position_transformer: XYZ
+      queue_size: 10
+      selectable: true
+      size_pixels: 3
+      size_m: 0.009999999776482582
+      style: Flat Squares
+      topic: /cam1/point_cloud_face
+      unreliable: false
+      use_fixed_frame: true
+      use_rainbow: true
+      value: false
+
+    # 相机点云 - 下巴相机
+    - alpha: 1
+      autocompute_intensity_bounds: true
+      autocompute_value_bounds:
+        max_value: 10
+        min_value: -10
+        value: true
+      axis: Z
+      channel_name: intensity
+      class: rviz_default_plugins/PointCloud2
+      color: [255, 255, 255]
+      color_transformer: RGB8
+      decay_time: 0
+      enabled: false
+      invert_rainbow: false
+      max_color: [255, 255, 255]
+      min_color: [0, 0, 0]
+      name: PointCloud2
+      position_transformer: XYZ
+      queue_size: 10
+      selectable: true
+      size_pixels: 3
+      size_m: 0.009999999776482582
+      style: Flat Squares
+      topic: /cam2/point_cloud_chin
+      unreliable: false
+      use_fixed_frame: true
+      use_rainbow: true
+      value: false
+
+    # 相机点云 - 左相机
+    - alpha: 1
+      autocompute_intensity_bounds: true
+      autocompute_value_bounds:
+        max_value: 10
+        min_value: -10
+        value: true
+      axis: Z
+      channel_name: intensity
+      class: rviz_default_plugins/PointCloud2
+      color: [255, 255, 255]
+      color_transformer: RGB8
+      decay_time: 0
+      enabled: false
+      invert_rainbow: false
+      max_color: [255, 255, 255]
+      min_color: [0, 0, 0]
+      name: PointCloud2
+      position_transformer: XYZ
+      queue_size: 10
+      selectable: true
+      size_pixels: 3
+      size_m: 0.009999999776482582
+      style: Flat Squares
+      topic: /cam3/point_cloud_left
+      unreliable: false
+      use_fixed_frame: true
+      use_rainbow: true
+      value: false
+
+    # 相机点云 - 右相机
+    - alpha: 1
+      autocompute_intensity_bounds: true
+      autocompute_value_bounds:
+        max_value: 10
+        min_value: -10
+        value: true
+      axis: Z
+      channel_name: intensity
+      class: rviz_default_plugins/PointCloud2
+      color: [255, 255, 255]
+      color_transformer: RGB8
+      decay_time: 0
+      enabled: false
+      invert_rainbow: false
+      max_color: [255, 255, 255]
+      min_color: [0, 0, 0]
+      name: PointCloud2
+      position_transformer: XYZ
+      queue_size: 10
+      selectable: true
+      size_pixels: 3
+      size_m: 0.009999999776482582
+      style: Flat Squares
+      topic: /cam4/point_cloud_right
+      unreliable: false
+      use_fixed_frame: true
+      use_rainbow: true
+      value: false
+
+    # 相机点云 - 后下相机
+    - alpha: 1
+      autocompute_intensity_bounds: true
+      autocompute_value_bounds:
+        max_value: 10
+        min_value: -10
+        value: true
+      axis: Z
+      channel_name: intensity
+      class: rviz_default_plugins/PointCloud2
+      color: [255, 255, 255]
+      color_transformer: RGB8
+      decay_time: 0
+      enabled: false
+      invert_rainbow: false
+      max_color: [255, 255, 255]
+      min_color: [0, 0, 0]
+      name: PointCloud2
+      position_transformer: XYZ
+      queue_size: 10
+      selectable: true
+      size_pixels: 3
+      size_m: 0.009999999776482582
+      style: Flat Squares
+      topic: /cam5/point_cloud_rearDown
+      unreliable: false
+      use_fixed_frame: true
+      use_rainbow: true
+      value: false
+  enabled: true
+
+  global_options:
+    background_color: [238, 238, 238]
+    default_light: true
+    fixed_frame: base
+    frame_rate: 30
+
+  name: root
+  tools:
+    - class: rviz_default_plugins/Interact
+      hide_inactive_objects: true
+    - class: rviz_default_plugins/MoveCamera
+    - class: rviz_default_plugins/Select
+    - class: rviz_default_plugins/FocusCamera
+    - class: rviz_default_plugins/Measure
+    - class: rviz_default_plugins/SetInitialPose
+      theta_std_deviation: 0.2617993950843811
+      topic: /initialpose
+      x_std_deviation: 0.5
+      y_std_deviation: 0.5
+    - class: rviz_default_plugins/SetGoal
+      topic: /move_base_simple/goal
+    - class: rviz_default_plugins/PublishPoint
+      single_click: true
+      topic: /clicked_point
+  value: true
+
+  views:
+    current:
+      class: rviz_default_plugins/Orbit
+      distance: 1.0180186033248901
+      enable_stereo_rendering:
+        stereo_eye_separation: 0.05999999865889549
+        stereo_focal_distance: 1
+        swap_stereo_eyes: false
+        value: false
+      field_of_view: 0.7853981852531433
+      focal_point:
+        x: 0.10819146782159805
+        y: 0.02224866859614849
+        z: -0.08825916796922684
+      focal_shape_fixed_size: false
+      focal_shape_size: 0.05000000074505806
+      invert_z_axis: false
+      name: Current View
+      near_clip_distance: 0.009999999776482582
+      pitch: 0.3647974133491516
+      target_frame: <Fixed Frame>
+      yaw: 4.123597621917725
+    saved: ~
+
+window_geometry:
+  displays:
+    collapsed: false
+  height: 752
+  hide_left_dock: false
+  hide_right_dock: false
+  qmainwindow_state: 000000ff00000000fd0000000400000000000001c700000296fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000296000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d00650072006101000001be000001900000000000000000000000010000010f000002e2fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000028000002e2000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000006400000003efc0100000002fb0000000800540069006d00650000000000000006400000042800fffffffb0000000800540069006d006501000000000000045000000000000000000000039d0000029600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  selection:
+    collapsed: false
+  time:
+    collapsed: false
+  tool_properties:
+    collapsed: false
+  views:
+    collapsed: false
+  width: 1386
+  x: 442
+  y: 159

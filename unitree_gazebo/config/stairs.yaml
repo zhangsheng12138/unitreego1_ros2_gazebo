@@ -1,0 +1,52 @@
+# Stairs World 配置参数
+# 包含楼梯环境的所有可调整参数
+
+# 物理引擎参数
+physics:
+  max_step_size: 0.001         # 物理引擎时间步长
+  real_time_factor: 1          # 实时因子
+  real_time_update_rate: 1000   # 实时更新速率
+  gravity: [0, 0, -9.81]        # 重力加速度
+  ode:
+    solver:
+      type: "quick"          # 求解器类型
+      iters: 50              # 迭代次数
+      sor: 1.3               # 超松弛因子
+    constraints:
+      cfm: 0.0               # 约束力混合系数
+      erp: 0.2               # 误差减少参数
+      contact_max_correcting_vel: 10.0  # 最大接触修正速度
+      contact_surface_layer: 0.001      # 接触表面层厚度
+
+# 场景设置
+scene:
+  clouds:
+    speed: 12                # 云移动速度
+
+# 静态环境模型
+static_environment:
+  floor:
+    pose: [0, 0, 0.09, 0, 0, 0]  # 平台位置和姿态
+    size: [2, 2, 0.18]           # 平台尺寸
+  floor2:
+    pose: [2.2, 0, 0.09, 0, 0, 0]  # 平台位置和姿态
+    size: [2, 2, 0.18]           # 平台尺寸
+  floor3:
+    pose: [5.2, 0, 0.63, 0, 0, 0]  # 平台位置和姿态
+    size: [2, 2, 0.18]           # 平台尺寸
+  material:
+    ambient: [0.2, 0.2, 0.2, 1.0]  # 材质环境光
+    diffuse: [0.421, 0.225, 0.0, 1.0]  # 材质漫反射
+
+# 楼梯模型
+stairs:
+  pose: [3.7, 0.009, 0, 0, 0, 0]  # 楼梯位置和姿态
+  step_size: [2, 0.25, 0.18]       # 台阶尺寸
+  steps:
+    - pose: [-0.375, 0, 0.09, 0, 0, 1.5708]  # 第一个台阶位置和姿态
+    - pose: [-0.125, 0, 0.27, 0, 0, 1.5708]  # 第二个台阶位置和姿态
+    - pose: [0.125, 0, 0.45, 0, 0, 1.5708]   # 第三个台阶位置和姿态
+    - pose: [0.375, 0, 0.63, 0, 0, 1.5708]   # 第四个台阶位置和姿态
+  material:
+    uri: "file://media/materials/scripts/gazebo.material"  # 材质脚本路径
+    name: "Gazebo/Wood"                                  # 材质名称

@@ -2,25 +2,41 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>unitree_gazebo</name>
-  <version>0.0.0</version>
-  <description>Unitree Gazebo Simulation for ROS2</description>
-  <maintainer email="user@todo.todo">user</maintainer>
+  <version>1.0.0</version>
+  <description>Unitree Robotics Gazebo Simulation for ROS2 (Humble/Iron)</description>
+  <maintainer email="dev@unitree-robotics.com">Unitree Robotics</maintainer>
   <license>MPL-2.0</license>
+  <url type="website">https://www.unitree-robotics.com/</url>
+  <author email="dev@unitree-robotics.com">Unitree Robotics Dev Team</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>rclcpp</depend>
-  <depend>std_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>tf2</depend>
-  <depend>tf2_ros</depend>
-  <depend>gazebo_ros</depend>
-  <depend>unitree_legged_msgs</depend>
+  <build_depend>rclcpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>go1_controller</build_depend>
+  <build_depend>gazebo_dev</build_depend>
+  <build_depend>ignition-math6</build_depend>
+
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>go1_controller</exec_depend>
+  <exec_depend>gazebo</exec_depend>
+  <exec_depend>ignition-math6</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
+    <gazebo_ros plugin_path="${prefix}/lib" />
   </export>
 </package>

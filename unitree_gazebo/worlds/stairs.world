@@ -1,90 +1,279 @@
 <?xml version="1.0"?>
-<sdf version="1.6">
+<!--
+Go1机器人楼梯仿真环境配置文件
+
+该文件定义了Go1机器人在Gazebo中的楼梯仿真环境，包括物理引擎参数、场景设置、光照和静态障碍物。
+
+主要组件：
+1. 物理引擎配置：设置ODE物理引擎的参数
+2. 场景设置：设置天空和环境光
+3. 光照：包含太阳模型
+4. 地面：包含地面平面模型
+5. 静态环境：添加多个平面作为不同高度的平台
+6. 楼梯模型：包含一个楼梯模型
+-->
+<sdf version="1.6" xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <!-- 包含配置文件 -->
+  <xacro:include filename="$(find unitree_gazebo)/config/stairs.yaml" />
+
 <world name="default">
+    <!-- 物理引擎配置 -->
     <physics type="ode">
-        <max_step_size>0.001</max_step_size>
-        <real_time_factor>1</real_time_factor>
-        <real_time_update_rate>1000</real_time_update_rate>
-        <gravity>0 0 -9.81</gravity>
+        <!-- 物理引擎时间步长 -->
+        <max_step_size>${physics.max_step_size}</max_step_size>
+        <!-- 实时因子 -->
+        <real_time_factor>${physics.real_time_factor}</real_time_factor>
+        <!-- 实时更新速率 -->
+        <real_time_update_rate>${physics.real_time_update_rate}</real_time_update_rate>
+        <!-- 重力加速度 -->
+        <gravity>${physics.gravity[0]} ${physics.gravity[1]} ${physics.gravity[2]}</gravity>
+        <!-- ODE物理引擎参数 -->
         <ode>
+            <!-- 求解器配置 -->
             <solver>
-                <type>quick</type>
-                <iters>50</iters>
-                <sor>1.3</sor>
+                <!-- 求解器类型 -->
+                <type>${physics.ode.solver.type}</type>
+                <!-- 迭代次数 -->
+                <iters>${physics.ode.solver.iters}</iters>
+                <!-- 超松弛因子 -->
+                <sor>${physics.ode.solver.sor}</sor>
             </solver>
+            <!-- 约束参数 -->
             <constraints>
-                <cfm>0.0</cfm>
-                <erp>0.2</erp>
-                <contact_max_correcting_vel>10.0</contact_max_correcting_vel>
-                <contact_surface_layer>0.001</contact_surface_layer>
+                <!-- 约束力混合系数 -->
+                <cfm>${physics.ode.constraints.cfm}</cfm>
+                <!-- 误差减少参数 -->
+                <erp>${physics.ode.constraints.erp}</erp>
+                <!-- 最大接触修正速度 -->
+                <contact_max_correcting_vel>${physics.ode.constraints.contact_max_correcting_vel}</contact_max_correcting_vel>
+                <!-- 接触表面层厚度 -->
+                <contact_surface_layer>${physics.ode.constraints.contact_surface_layer}</contact_surface_layer>
             </constraints>
         </ode>
     </physics>
 
+    <!-- 场景设置 -->
     <scene>
+        <!-- 天空设置 -->
         <sky>
             <clouds>
-                <speed>12</speed>
+                <!-- 云移动速度 -->
+                <speed>${scene.clouds.speed}</speed>
             </clouds>
         </sky>
     </scene>
 
+    <!-- 包含太阳模型 -->
     <include>
         <uri>model://sun</uri>
     </include>
+    <!-- 包含地面平面模型 -->
     <include>
         <uri>model://ground_plane</uri>
     </include>
 
+    <!-- 静态环境模型 -->
     <model name="static_environment">
+        <!-- 设置为静态模型 -->
         <static>true</static>
+        
+        <!-- 第一个平台 -->
         <link name="floor">
-            <pose>0 0 0.09 0 0 0</pose>
+            <!-- 平台位置和姿态 -->
+            <pose>${static_environment.floor.pose[0]} ${static_environment.floor.pose[1]} ${static_environment.floor.pose[2]} ${static_environment.floor.pose[3]} ${static_environment.floor.pose[4]} ${static_environment.floor.pose[5]}</pose>
+            <!-- 碰撞体 -->
             <collision name="floor_collision">
-                <geometry><box><size>2 2 0.18</size></box></geometry>
+                <geometry><box><size>${static_environment.floor.size[0]} ${static_environment.floor.size[1]} ${static_environment.floor.size[2]}</size></box></geometry>
             </collision>
+            <!-- 可视化模型 -->
             <visual name="floor_visual">
-                <geometry><box><size>2 2 0.18</size></box></geometry>
+                <geometry><box><size>${static_environment.floor.size[0]} ${static_environment.floor.size[1]} ${static_environment.floor.size[2]}</size></box></geometry>
+                <!-- 材质设置 -->
                 <material>
-                    <ambient>0.2 0.2 0.2 1.0</ambient>
-                    <diffuse>0.421 0.225 0.0 1.0</diffuse>
+                    <ambient>${static_environment.material.ambient[0]} ${static_environment.material.ambient[1]} ${static_environment.material.ambient[2]} ${static_environment.material.ambient[3]}</ambient>
+                    <diffuse>${static_environment.material.diffuse[0]} ${static_environment.material.diffuse[1]} ${static_environment.material.diffuse[2]} ${static_environment.material.diffuse[3]}</diffuse>
                 </material>
             </visual>
         </link>
 
+        <!-- 第二个平台 -->
         <link name="floor2">
-            <pose>2.2 0 0.09 0 0 0</pose>
+            <!-- 平台位置和姿态 -->
+            <pose>${static_environment.floor2.pose[0]} ${static_environment.floor2.pose[1]} ${static_environment.floor2.pose[2]} ${static_environment.floor2.pose[3]} ${static_environment.floor2.pose[4]} ${static_environment.floor2.pose[5]}</pose>
+            <!-- 碰撞体 -->
             <collision name="floor2_collision">
-                <geometry><box><size>2 2 0.18</size></box></geometry>
+                <geometry><box><size>${static_environment.floor2.size[0]} ${static_environment.floor2.size[1]} ${static_environment.floor2.size[2]}</size></box></geometry>
             </collision>
+            <!-- 可视化模型 -->
             <visual name="floor2_visual">
-                <geometry><box><size>2 2 0.18</size></box></geometry>
+                <geometry><box><size>${static_environment.floor2.size[0]} ${static_environment.floor2.size[1]} ${static_environment.floor2.size[2]}</size></box></geometry>
+                <!-- 材质设置 -->
                 <material>
-                    <ambient>0.2 0.2 0.2 1.0</ambient>
-                    <diffuse>0.421 0.225 0.0 1.0</diffuse>
+                    <ambient>${static_environment.material.ambient[0]} ${static_environment.material.ambient[1]} ${static_environment.material.ambient[2]} ${static_environment.material.ambient[3]}</ambient>
+                    <diffuse>${static_environment.material.diffuse[0]} ${static_environment.material.diffuse[1]} ${static_environment.material.diffuse[2]} ${static_environment.material.diffuse[3]}</diffuse>
                 </material>
             </visual>
         </link>
 
+        <!-- 第三个平台（较高） -->
         <link name="floor3">
-            <pose>5.2 0 0.63 0 0 0</pose>
+            <!-- 平台位置和姿态 -->
+            <pose>${static_environment.floor3.pose[0]} ${static_environment.floor3.pose[1]} ${static_environment.floor3.pose[2]} ${static_environment.floor3.pose[3]} ${static_environment.floor3.pose[4]} ${static_environment.floor3.pose[5]}</pose>
+            <!-- 碰撞体 -->
             <collision name="floor3_collision">
-                <geometry><box><size>2 2 0.18</size></box></geometry>
+                <geometry><box><size>${static_environment.floor3.size[0]} ${static_environment.floor3.size[1]} ${static_environment.floor3.size[2]}</size></box></geometry>
             </collision>
+            <!-- 可视化模型 -->
             <visual name="floor3_visual">
-                <geometry><box><size>2 2 0.18</size></box></geometry>
+                <geometry><box><size>${static_environment.floor3.size[0]} ${static_environment.floor3.size[1]} ${static_environment.floor3.size[2]}</size></box></geometry>
+                <!-- 材质设置 -->
                 <material>
-                    <ambient>0.2 0.2 0.2 1.0</ambient>
-                    <diffuse>0.421 0.225 0.0 1.0</diffuse>
+                    <ambient>${static_environment.material.ambient[0]} ${static_environment.material.ambient[1]} ${static_environment.material.ambient[2]} ${static_environment.material.ambient[3]}</ambient>
+                    <diffuse>${static_environment.material.diffuse[0]} ${static_environment.material.diffuse[1]} ${static_environment.material.diffuse[2]} ${static_environment.material.diffuse[3]}</diffuse>
                 </material>
             </visual>
         </link>
     </model>
 
-    <!-- 正确：ROS2 通用模型引用方式 -->
-    <include>
-        <uri>model://stairs</uri>
-    </include>
+    <!-- 楼梯模型 -->
+    <!--
+    楼梯模型定义，包含4个台阶，用于Unitree四足机器人的楼梯越障测试。
+    模型位置：位于(3.7, 0.009, 0)处
+    台阶尺寸：每个台阶的尺寸为2x0.25x0.18
+    台阶材质：使用Gazebo内置的Wood材质
+    静态属性：设置为静态模型，不会受到物理力的影响
+    -->
+    <model name='stairs'>
+        <!-- 模型位置和姿态 (x, y, z, roll, pitch, yaw) -->
+        <pose frame=''>${stairs.pose[0]} ${stairs.pose[1]} ${stairs.pose[2]} ${stairs.pose[3]} ${stairs.pose[4]} ${stairs.pose[5]}</pose>
+        
+        <!-- 楼梯链接，包含所有台阶 -->
+        <link name='Stairs_1'>
+            <!-- 第一个台阶 -->
+            <visual name='Stairs_1_Visual_0'>
+                <!-- 台阶位置和姿态 -->
+                <pose frame=''>${stairs.steps[0].pose[0]} ${stairs.steps[0].pose[1]} ${stairs.steps[0].pose[2]} ${stairs.steps[0].pose[3]} ${stairs.steps[0].pose[4]} ${stairs.steps[0].pose[5]}</pose>
+                <!-- 台阶几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+                <!-- 台阶材质 -->
+                <material>
+                    <script>
+                        <uri>${stairs.material.uri}</uri>
+                        <name>${stairs.material.name}</name>
+                    </script>
+                </material>
+            </visual>
+            <!-- 第一个台阶的碰撞体 -->
+            <collision name='Stairs_1_Collision_0'>
+                <!-- 碰撞体位置和姿态 -->
+                <pose frame=''>${stairs.steps[0].pose[0]} ${stairs.steps[0].pose[1]} ${stairs.steps[0].pose[2]} ${stairs.steps[0].pose[3]} ${stairs.steps[0].pose[4]} ${stairs.steps[0].pose[5]}</pose>
+                <!-- 碰撞体几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+            </collision>
+
+            <!-- 第二个台阶 -->
+            <visual name='Stairs_1_Visual_1'>
+                <!-- 台阶位置和姿态 -->
+                <pose frame=''>${stairs.steps[1].pose[0]} ${stairs.steps[1].pose[1]} ${stairs.steps[1].pose[2]} ${stairs.steps[1].pose[3]} ${stairs.steps[1].pose[4]} ${stairs.steps[1].pose[5]}</pose>
+                <!-- 台阶几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+                <!-- 台阶材质 -->
+                <material>
+                    <script>
+                        <uri>${stairs.material.uri}</uri>
+                        <name>${stairs.material.name}</name>
+                    </script>
+                </material>
+            </visual>
+            <!-- 第二个台阶的碰撞体 -->
+            <collision name='Stairs_1_Collision_1'>
+                <!-- 碰撞体位置和姿态 -->
+                <pose frame=''>${stairs.steps[1].pose[0]} ${stairs.steps[1].pose[1]} ${stairs.steps[1].pose[2]} ${stairs.steps[1].pose[3]} ${stairs.steps[1].pose[4]} ${stairs.steps[1].pose[5]}</pose>
+                <!-- 碰撞体几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+            </collision>
+
+            <!-- 第三个台阶 -->
+            <visual name='Stairs_1_Visual_2'>
+                <!-- 台阶位置和姿态 -->
+                <pose frame=''>${stairs.steps[2].pose[0]} ${stairs.steps[2].pose[1]} ${stairs.steps[2].pose[2]} ${stairs.steps[2].pose[3]} ${stairs.steps[2].pose[4]} ${stairs.steps[2].pose[5]}</pose>
+                <!-- 台阶几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+                <!-- 台阶材质 -->
+                <material>
+                    <script>
+                        <uri>${stairs.material.uri}</uri>
+                        <name>${stairs.material.name}</name>
+                    </script>
+                </material>
+            </visual>
+            <!-- 第三个台阶的碰撞体 -->
+            <collision name='Stairs_1_Collision_2'>
+                <!-- 碰撞体位置和姿态 -->
+                <pose frame=''>${stairs.steps[2].pose[0]} ${stairs.steps[2].pose[1]} ${stairs.steps[2].pose[2]} ${stairs.steps[2].pose[3]} ${stairs.steps[2].pose[4]} ${stairs.steps[2].pose[5]}</pose>
+                <!-- 碰撞体几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+            </collision>
+
+            <!-- 第四个台阶 -->
+            <visual name='Stairs_1_Visual_3'>
+                <!-- 台阶位置和姿态 -->
+                <pose frame=''>${stairs.steps[3].pose[0]} ${stairs.steps[3].pose[1]} ${stairs.steps[3].pose[2]} ${stairs.steps[3].pose[3]} ${stairs.steps[3].pose[4]} ${stairs.steps[3].pose[5]}</pose>
+                <!-- 台阶几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+                <!-- 台阶材质 -->
+                <material>
+                    <script>
+                        <uri>${stairs.material.uri}</uri>
+                        <name>${stairs.material.name}</name>
+                    </script>
+                </material>
+            </visual>
+            <!-- 第四个台阶的碰撞体 -->
+            <collision name='Stairs_1_Collision_3'>
+                <!-- 碰撞体位置和姿态 -->
+                <pose frame=''>${stairs.steps[3].pose[0]} ${stairs.steps[3].pose[1]} ${stairs.steps[3].pose[2]} ${stairs.steps[3].pose[3]} ${stairs.steps[3].pose[4]} ${stairs.steps[3].pose[5]}</pose>
+                <!-- 碰撞体几何形状 -->
+                <geometry>
+                    <box>
+                        <size>${stairs.step_size[0]} ${stairs.step_size[1]} ${stairs.step_size[2]}</size>
+                    </box>
+                </geometry>
+            </collision>
+        </link>
+        
+        <!-- 设置为静态模型，不会受到物理力的影响 -->
+        <static>true</static>
+    </model>
 
 </world>
 </sdf>

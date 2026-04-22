@@ -4,7 +4,6 @@
 
 gazebo_ros2_control:
   ros__parameters:
-
     # ====================== 1. 关节状态广播器（必选，不可删除） ======================
     # 作用：读取所有关节的 position/velocity/effort，并发布 /joint_states 话题
     # 对齐接口：robot_state_publisher + RViz + 上层控制器
@@ -13,6 +12,8 @@ gazebo_ros2_control:
 
     # ====================== 2. 全局力矩控制器（核心可修改） ======================
     # 控制器名称：可自定义，如 go1_torque_controller
+    # 【可变参数】控制器名称
+    # 引用/被引用注意：1. 自定义名称需唯一，不可与其他控制器重名；2. 启动控制器时需使用该名称（ros2 control load_controller）；3. 被gazebo_ros2_control加载器引用，错误名称会导致控制器加载失败
     go1_effort_controller:
       # 类型固定：关节组力矩控制器（对应 EffortJointInterface）
       type: effort_controllers/JointGroupEffortController
@@ -20,6 +21,7 @@ gazebo_ros2_control:
       # ====================== 【可修改】关节列表 ======================
       # 用途：声明要控制的关节，必须与 URDF 中的 <joint> 名称完全一致
       # 对齐接口：URDF + hardware_interface/effort
+      # 引用/被引用注意：1. 关节名称必须与URDF/Xacro中的<joint name="xxx">完全一致（大小写/下划线敏感）；2. 缺失关节会导致该关节无法被控制，多余关节会触发加载错误；3. 被effort_controllers引用，接口为hardware_interface/EffortJointInterface；4. 四足共12个关节（每条腿3个），需确保数量/名称无遗漏/错误
       joints:
         - FR_hip_joint
         - FR_thigh_joint
@@ -37,12 +39,13 @@ gazebo_ros2_control:
       # ====================== 【核心可修改】PID 力矩控制参数 ======================
       # 用途：力矩环的位置跟踪 PID（仿真/真机稳定性关键）
       # 对齐接口：effort_controllers → PID计算 → 输出力矩
+      # 引用/被引用注意：1. P增益（比例）：四足建议50-200，过小导致跟踪滞后，过大导致抖动；2. I增益（积分）：四足一般设0，开启后易超调（真机/仿真均不推荐）；3. D增益（微分）：建议1-10，过小阻尼不足，过大易引入噪声；4. 所有关节PID需匹配机械特性（如大腿/小腿可微调差异）；5. 被PID控制器节点引用，参数格式需为{p: x.x, i: x.x, d: x.x}，语法错误会导致控制器加载失败；6. 修改后需重启控制器生效，不可动态修改（需重新加载）
       gains:
         # 前右腿 FR
         FR_hip_joint:
-          p: 100.0        # 【可修改】比例增益 → 位置误差→力矩
-          i: 0.0          # 【可修改】积分增益 → 消除静差（四足一般设0）
-          d: 5.0          # 【可修改】微分增益 → 阻尼（抑制抖动）
+          p: 100.0        # 【可修改】比例增益 → 位置误差→力矩（四足建议50-200）
+          i: 0.0          # 【可修改】积分增益 → 消除静差（四足一般设0，避免超调）
+          d: 5.0          # 【可修改】微分增益 → 阻尼（抑制抖动，建议1-10）
         FR_thigh_joint: { p: 100.0, i: 0.0, d: 5.0 }
         FR_calf_joint:  { p: 100.0, i: 0.0, d: 5.0 }
 
@@ -64,12 +67,18 @@ gazebo_ros2_control:
       # ====================== 【固定】命令接口（力矩控制） ======================
       # 用途：告诉 ros2_control 该控制器发送【力矩指令】
       # 对齐接口：hardware_interface::HW_IF_EFFORT
+      # 引用/被引用注意：1. 力矩控制必须设为effort，位置控制为position，速度控制为velocity；2. 需与URDF中<joint>的hardware_interface对齐；3. 被gazebo_ros2_control硬件接口引用，错误会导致指令无法下发
       command_interfaces:
         - effort
 
       # ====================== 【固定】状态接口 ======================
       # 用途：读取关节【位置】和【速度】用于闭环
       # 对齐接口：hardware_interface 反馈接口
+      # 引用/被引用注意：1. 必须包含position/velocity（PID闭环必需），缺失会导致PID计算失败；2. 需与gazebo_ros2_control提供的硬件接口对齐；3. 被effort_controllers引用，用于计算力矩输出
       state_interfaces:
         - position
         - velocity
+      
+      # 补充优化：显式声明PID模式（提升可读性）
+      pid_mode: position
+

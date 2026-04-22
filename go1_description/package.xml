@@ -1,28 +1,49 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/metadata/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
+  <!-- 【可变参数】包名 -->
+  <!-- 引用/被引用注意：1. 必须与CMakeLists.txt中project()名称完全一致；2. 被ROS2包管理工具（colcon）引用，重命名需同步修改所有文件中的包名引用；3. 需符合ROS2包命名规范（小写+下划线） -->
   <name>go1_description</name>
-  <version>0.0.0</version>
-  <description>Unitree Go1 Description for ROS2</description>
+  <!-- 【可变参数】版本号 -->
+  <!-- 引用/被引用注意：1. 遵循语义化版本（MAJOR.MINOR.PATCH）；2. 被包依赖、发布工具引用，更新版本需同步说明变更内容；3. 与CMakeLists.txt版本对齐（若声明） -->
+  <version>1.0.0</version>
+  <!-- 【可变参数】描述信息 -->
+  <!-- 引用/被引用注意：1. 需清晰说明包功能，适配场景；2. 被ROS2包索引、文档工具引用，无语法限制但需准确 -->
+  <description>Unitree Go1 Description for ROS2 (适配Gazebo+ros2_control力矩控制)</description>
+  <!-- 【可变参数】维护者信息 -->
+  <!-- 引用/被引用注意：1. email需有效，name为维护者标识；2. 被ROS2包发布、问题反馈工具引用，需准确填写 -->
   <maintainer email="laikago@unitree.cc">unitree</maintainer>
+  <!-- 【可变参数】许可证 -->
+  <!-- 引用/被引用注意：1. 需与代码开源协议一致；2. 被ROS2包发布、合规检查工具引用，常用Apache-2.0/MIT -->
   <license>Apache-2.0</license>
 
   <!-- ROS2 构建工具 -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- ROS2 运行依赖（适配 Gazebo/控制/RVIZ2） -->
+  <!-- ROS2 运行依赖（完整对齐功能需求） -->
+  <!-- 【可变参数】运行依赖列表 -->
+  <!-- 引用/被引用注意：1. 需与功能匹配，缺失会导致运行时找不到节点/库；2. 被colcon build、ros2 run引用，依赖版本需与ROS2发行版兼容（如Humble版需对应版本）；3. 添加/删除依赖需同步修改CMakeLists.txt中的find_package -->
   <exec_depend>xacro</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>ros2_control</exec_depend>
   <exec_depend>gazebo_ros2_control</exec_depend>
+  <exec_depend>effort_controllers</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>rclcpp</exec_depend> <!-- 补充优化：适配ros2_control底层依赖 -->
 
   <!-- 测试依赖 -->
+  <!-- 【可变参数】测试依赖列表 -->
+  <!-- 引用/被引用注意：1. 仅在BUILD_TESTING=ON时生效；2. 缺失会导致测试编译失败；3. ament_lint_auto需配合ament_lint_common使用 -->
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
   <export>
+    <!-- 【可变参数】构建类型 -->
+    <!-- 引用/被引用注意：1. 必须与实际构建工具一致（ament_cmake/ament_python）；2. 被ament构建系统引用，错误会导致编译失败 -->
     <build_type>ament_cmake</build_type>
   </export>
 </package>
+

@@ -1,0 +1,1166 @@
+<?xml version="1.0" ?>
+<!-- =================================================================================== -->
+<!-- |    ROS2 Compatible Go1 Robot URDF                                                | -->
+<!-- |    Gazebo Harmonic + ros2_control                                               | -->
+<!-- |    完整无省略版 - Unitree Go1 四足机器人                                       | -->
+<!-- =================================================================================== -->
+<robot name="go1" xmlns:xacro="http://wiki.ros.org/xacro">
+  
+  <!-- 包含参数文件 -->
+  <xacro:include filename="$(find go1_description)/xacro/go1_urdf_parameter.xacro" />
+  
+  <!-- 常量定义 -->
+  <!-- PI is already defined in the parameter file -->
+  
+  <!-- ===================== 基础材料定义 ===================== -->
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="silver">
+    <color rgba="0.9137 0.9137 0.8471 1.0"/>
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.4235 0.0392 1.0"/>
+  </material>
+  <material name="brown">
+    <color rgba="0.8706 0.8118 0.7647 1.0"/>
+  </material>
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+
+  <!-- ===================== ROS2 CONTROL 核心插件 ===================== -->
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <robot_param>robot_description</robot_param>
+      <robot_param_node>robot_state_publisher</robot_param_node>
+      <parameters>$(find go1_description)/config/robot_control.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <!-- ===================== 外力施加插件 (ROS2) ===================== -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_force.so" name="gazebo_ros_force">
+      <body_name>trunk</body_name>
+      <topic_name>${topic_force}</topic_name>
+      <ros2>true</ros2>
+    </plugin>
+  </gazebo>
+
+  <!-- ===================== IMU 传感器 (ROS2) ===================== -->
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>${imu_update_rate}</update_rate>
+      <visualize>${imu_visualize}</visualize>
+      <plugin filename="libgazebo_ros2_imu.so" name="imu_plugin">
+        <frame_id>imu_link</frame_id>
+        <topic_name>${topic_imu}</topic_name>
+        <update_rate>${imu_update_rate}.0</update_rate>
+        <angular_velocity_stdev>0.0</angular_velocity_stdev>
+        <linear_acceleration_stdev>0.0</linear_acceleration_stdev>
+        <orientation_stdev>0.0</orientation_stdev>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+  <!-- ===================== 深度相机 (ROS2) ===================== -->
+  <gazebo reference="camera_face">
+    <sensor name="camera_face_camera" type="depth">
+      <update_rate>${camera_update_rate}</update_rate>
+      <camera>
+        <horizontal_fov>${camera_horizontal_fov}</horizontal_fov>
+        <image>
+          <width>${camera_image_width}</width>
+          <height>${camera_image_height}</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>${camera_near_clip}</near>
+          <far>${camera_far_clip}</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros2_camera.so" name="camera_face_controller">
+        <frame_name>camera_optical_face</frame_name>
+        <camera_name>camera_face</camera_name>
+        <image_topic>/camera_face/${topic_camera_color}</image_topic>
+        <camera_info_topic>/camera_face/color/camera_info</camera_info_topic>
+        <depth_image_topic>/camera_face/${topic_camera_depth}</depth_image_topic>
+        <depth_camera_info_topic>/camera_face/depth/camera_info</depth_camera_info_topic>
+        <point_cloud_topic>/camera_face/${topic_camera_points}</point_cloud_topic>
+        <min_depth>${camera_min_depth}</min_depth>
+        <max_depth>${camera_max_depth}</max_depth>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_chin">
+    <sensor name="camera_chin_camera" type="depth">
+      <update_rate>${camera_update_rate}</update_rate>
+      <camera>
+        <horizontal_fov>${camera_horizontal_fov}</horizontal_fov>
+        <image>
+          <width>${camera_image_width}</width>
+          <height>${camera_image_height}</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>${camera_near_clip}</near>
+          <far>${camera_far_clip}</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros2_camera.so" name="camera_chin_controller">
+        <frame_name>camera_optical_chin</frame_name>
+        <camera_name>camera_chin</camera_name>
+        <image_topic>/camera_chin/${topic_camera_color}</image_topic>
+        <camera_info_topic>/camera_chin/color/camera_info</camera_info_topic>
+        <depth_image_topic>/camera_chin/${topic_camera_depth}</depth_image_topic>
+        <depth_camera_info_topic>/camera_chin/depth/camera_info</depth_camera_info_topic>
+        <point_cloud_topic>/camera_chin/${topic_camera_points}</point_cloud_topic>
+        <min_depth>${camera_min_depth}</min_depth>
+        <max_depth>${camera_max_depth}</max_depth>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_left">
+    <sensor name="camera_left_camera" type="depth">
+      <update_rate>${camera_update_rate}</update_rate>
+      <camera>
+        <horizontal_fov>${camera_horizontal_fov}</horizontal_fov>
+        <image>
+          <width>${camera_image_width}</width>
+          <height>${camera_image_height}</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>${camera_near_clip}</near>
+          <far>${camera_far_clip}</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros2_camera.so" name="camera_left_controller">
+        <frame_name>camera_optical_left</frame_name>
+        <camera_name>camera_left</camera_name>
+        <image_topic>/camera_left/${topic_camera_color}</image_topic>
+        <camera_info_topic>/camera_left/color/camera_info</camera_info_topic>
+        <depth_image_topic>/camera_left/${topic_camera_depth}</depth_image_topic>
+        <depth_camera_info_topic>/camera_left/depth/camera_info</depth_camera_info_topic>
+        <point_cloud_topic>/camera_left/${topic_camera_points}</point_cloud_topic>
+        <min_depth>${camera_min_depth}</min_depth>
+        <max_depth>${camera_max_depth}</max_depth>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_right">
+    <sensor name="camera_right_camera" type="depth">
+      <update_rate>${camera_update_rate}</update_rate>
+      <camera>
+        <horizontal_fov>${camera_horizontal_fov}</horizontal_fov>
+        <image>
+          <width>${camera_image_width}</width>
+          <height>${camera_image_height}</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>${camera_near_clip}</near>
+          <far>${camera_far_clip}</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros2_camera.so" name="camera_right_controller">
+        <frame_name>camera_optical_right</frame_name>
+        <camera_name>camera_right</camera_name>
+        <image_topic>/camera_right/${topic_camera_color}</image_topic>
+        <camera_info_topic>/camera_right/color/camera_info</camera_info_topic>
+        <depth_image_topic>/camera_right/${topic_camera_depth}</depth_image_topic>
+        <depth_camera_info_topic>/camera_right/depth/camera_info</depth_camera_info_topic>
+        <point_cloud_topic>/camera_right/${topic_camera_points}</point_cloud_topic>
+        <min_depth>${camera_min_depth}</min_depth>
+        <max_depth>${camera_max_depth}</max_depth>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_rearDown">
+    <sensor name="camera_rearDown_camera" type="depth">
+      <update_rate>${camera_update_rate}</update_rate>
+      <camera>
+        <horizontal_fov>${camera_horizontal_fov}</horizontal_fov>
+        <image>
+          <width>${camera_image_width}</width>
+          <height>${camera_image_height}</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>${camera_near_clip}</near>
+          <far>${camera_far_clip}</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros2_camera.so" name="camera_rearDown_controller">
+        <frame_name>camera_optical_rearDown</frame_name>
+        <camera_name>camera_rearDown</camera_name>
+        <image_topic>/camera_rearDown/${topic_camera_color}</image_topic>
+        <camera_info_topic>/camera_rearDown/color/camera_info</camera_info_topic>
+        <depth_image_topic>/camera_rearDown/${topic_camera_depth}</depth_image_topic>
+        <depth_camera_info_topic>/camera_rearDown/depth/camera_info</depth_camera_info_topic>
+        <point_cloud_topic>/camera_rearDown/${topic_camera_points}</point_cloud_topic>
+        <min_depth>${camera_min_depth}</min_depth>
+        <max_depth>${camera_max_depth}</max_depth>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ===================== 足端接触传感器 ===================== -->
+  <gazebo reference="FR_calf">
+    <sensor name="FR_foot_contact" type="contact">
+      <update_rate>${foot_contact_update_rate}</update_rate>
+      <plugin filename="libFootContactPlugin.so" name="FR_contactPlugin">
+        <ros2>true</ros2>
+      </plugin>
+      <contact>
+        <collision>FR_foot_collision</collision>
+      </contact>
+    </sensor>
+  </gazebo>
+  <gazebo reference="FL_calf">
+    <sensor name="FL_foot_contact" type="contact">
+      <update_rate>${foot_contact_update_rate}</update_rate>
+      <plugin filename="libFootContactPlugin.so" name="FL_contactPlugin">
+        <ros2>true</ros2>
+      </plugin>
+      <contact>
+        <collision>FL_foot_collision</collision>
+      </contact>
+    </sensor>
+  </gazebo>
+  <gazebo reference="RR_calf">
+    <sensor name="RR_foot_contact" type="contact">
+      <update_rate>${foot_contact_update_rate}</update_rate>
+      <plugin filename="libFootContactPlugin.so" name="RR_contactPlugin">
+        <ros2>true</ros2>
+      </plugin>
+      <contact>
+        <collision>RR_foot_collision</collision>
+      </contact>
+    </sensor>
+  </gazebo>
+  <gazebo reference="RL_calf">
+    <sensor name="RL_foot_contact" type="contact">
+      <update_rate>${foot_contact_update_rate}</update_rate>
+      <plugin filename="libFootContactPlugin.so" name="RL_contactPlugin">
+        <ros2>true</ros2>
+      </plugin>
+      <contact>
+        <collision>RL_foot_collision</collision>
+      </contact>
+    </sensor>
+  </gazebo>
+
+  <!-- ===================== 足端力可视化插件 (ROS2) ===================== -->
+  <gazebo reference="FR_foot">
+    <visual>
+      <plugin filename="libDrawForcePlugin.so" name="FR_drawForcePlugin">
+        <topicName>FR_foot_contact</topicName>
+      </plugin>
+    </visual>
+  </gazebo>
+  <gazebo reference="FL_foot">
+    <visual>
+      <plugin filename="libDrawForcePlugin.so" name="FL_drawForcePlugin">
+        <topicName>FL_foot_contact</topicName>
+      </plugin>
+    </visual>
+  </gazebo>
+  <gazebo reference="RR_foot">
+    <visual>
+      <plugin filename="libDrawForcePlugin.so" name="RR_drawForcePlugin">
+        <topicName>RR_foot_contact</topicName>
+      </plugin>
+    </visual>
+  </gazebo>
+  <gazebo reference="RL_foot">
+    <visual>
+      <plugin filename="libDrawForcePlugin.so" name="RL_drawForcePlugin">
+        <topicName>RL_foot_contact</topicName>
+      </plugin>
+    </visual>
+  </gazebo>
+
+  <!-- ===================== 全局物理属性配置 ===================== -->
+  <gazebo reference="base">
+    <material>Gazebo/Green</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  <gazebo reference="trunk">
+    <mu1>${trunk_mu1}</mu1>
+    <mu2>${trunk_mu2}</mu2>
+    <kp value="${trunk_kp}"/>
+    <kd value="${trunk_kd}"/>
+  </gazebo>
+  <gazebo reference="imu_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+  <gazebo reference="depthCamera_link_left">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <!-- ===================== 腿部物理属性 ===================== -->
+  <!-- 前右 FR -->
+  <gazebo reference="FR_hip">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="FR_thigh">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/DarkGrey</material>
+    <kp value="${leg_kp}"/>
+    <kd value="${leg_kd}"/>
+  </gazebo>
+  <gazebo reference="FR_calf">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+  </gazebo>
+  <gazebo reference="FR_foot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/Orange</material>
+    <kp value="${foot_kp}"/>
+    <kd value="${foot_kd}"/>
+  </gazebo>
+
+  <!-- 前左 FL -->
+  <gazebo reference="FL_hip">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="FL_thigh">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/DarkGrey</material>
+    <kp value="${leg_kp}"/>
+    <kd value="${leg_kd}"/>
+  </gazebo>
+  <gazebo reference="FL_calf">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+  </gazebo>
+  <gazebo reference="FL_foot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/Orange</material>
+    <kp value="${foot_kp}"/>
+    <kd value="${foot_kd}"/>
+  </gazebo>
+
+  <!-- 后右 RR -->
+  <gazebo reference="RR_hip">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="RR_thigh">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/DarkGrey</material>
+    <kp value="${leg_kp}"/>
+    <kd value="${leg_kd}"/>
+  </gazebo>
+  <gazebo reference="RR_calf">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+  </gazebo>
+  <gazebo reference="RR_foot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/Orange</material>
+    <kp value="${foot_kp}"/>
+    <kd value="${foot_kd}"/>
+  </gazebo>
+
+  <!-- 后左 RL -->
+  <gazebo reference="RL_hip">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="RL_thigh">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/DarkGrey</material>
+    <kp value="${leg_kp}"/>
+    <kd value="${leg_kd}"/>
+  </gazebo>
+  <gazebo reference="RL_calf">
+    <mu1>${leg_mu1}</mu1>
+    <mu2>${leg_mu2}</mu2>
+    <self_collide>true</self_collide>
+  </gazebo>
+  <gazebo reference="RL_foot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <self_collide>true</self_collide>
+    <material>Gazebo/Orange</material>
+    <kp value="${foot_kp}"/>
+    <kd value="${foot_kd}"/>
+  </gazebo>
+
+  <!-- ===================== 基础连杆与关节 ===================== -->
+  <!-- 调试模式 -->
+  <xacro:if value="${debug_enabled}">
+    <link name="world"/>
+    <joint name="base_static_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="${debug_world_joint_position}"/>
+      <parent link="world"/>
+      <child link="base"/>
+    </joint>
+  </xacro:if>
+
+  <!-- 根坐标系 -->
+  <link name="base">
+    <inertial>
+      <mass value="${base_mass}"/>
+      <inertia ixx="${base_ixx}" ixy="${base_ixy}" ixz="${base_ixz}" iyy="${base_iyy}" iyz="${base_iyz}" izz="${base_izz}"/>
+    </inertial>
+    <visual>
+      <geometry><box size="0.001 0.001 0.001"/></geometry>
+    </visual>
+  </link>
+
+  <!-- 基座固定关节 -->
+  <joint name="floating_base" type="fixed">
+    <origin rpy="0 0 0" xyz="${floating_base_position}"/>
+    <parent link="base"/>
+    <child link="trunk"/>
+  </joint>
+
+  <!-- 躯干连杆 -->
+  <link name="trunk">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/trunk.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry><box size="${trunk_collision_size}"/></geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="${trunk_com}"/>
+      <mass value="${trunk_mass}"/>
+      <inertia ixx="${trunk_ixx}" ixy="${trunk_ixy}" ixz="${trunk_ixz}" iyy="${trunk_iyy}" iyz="${trunk_iyz}" izz="${trunk_izz}"/>
+    </inertial>
+  </link>
+
+  <!-- IMU 关节+连杆 -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="trunk"/>
+    <child link="imu_link"/>
+    <origin rpy="0 0 0" xyz="${imu_joint_position}"/>
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <mass value="${imu_link_mass}"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual><geometry><box size="${imu_link_box_size}"/></geometry></visual>
+    <collision><geometry><box size="${imu_link_box_size}"/></geometry></collision>
+  </link>
+
+  <!-- ===================== 深度相机 ===================== -->
+  <!-- 面部相机 -->
+  <joint name="camera_joint_face" type="fixed">
+    <origin rpy="${PI} 0 0" xyz="${depth_camera_face}"/>
+    <parent link="trunk"/>
+    <child link="camera_face"/>
+  </joint>
+  <link name="camera_face">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${depth_camera_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/depthCamera.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="${depth_camera_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${depth_camera_ixx}" ixy="${depth_camera_ixy}" ixz="${depth_camera_ixz}" iyy="${depth_camera_iyy}" iyz="${depth_camera_iyz}" izz="${depth_camera_izz}" />
+    </inertial>
+  </link>
+  <joint name="camera_optical_joint_face" type="fixed">
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+    <parent link="camera_face"/>
+    <child link="camera_optical_face"/>
+  </joint>
+  <link name="camera_optical_face">
+  </link>
+
+  <!-- 下巴相机 -->
+  <joint name="camera_joint_chin" type="fixed">
+    <origin rpy="${PI} ${PI/2} 0" xyz="${depth_camera_chin}"/>
+    <parent link="trunk"/>
+    <child link="camera_chin"/>
+  </joint>
+  <link name="camera_chin">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${depth_camera_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/depthCamera.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="${depth_camera_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${depth_camera_ixx}" ixy="${depth_camera_ixy}" ixz="${depth_camera_ixz}" iyy="${depth_camera_iyy}" iyz="${depth_camera_iyz}" izz="${depth_camera_izz}" />
+    </inertial>
+  </link>
+  <joint name="camera_optical_joint_chin" type="fixed">
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+    <parent link="camera_chin"/>
+    <child link="camera_optical_chin"/>
+  </joint>
+  <link name="camera_optical_chin">
+  </link>
+
+  <!-- 左相机 -->
+  <joint name="camera_joint_left" type="fixed">
+    <origin rpy="${PI} 0.2618 ${PI/2}" xyz="${depth_camera_left}"/>
+    <parent link="trunk"/>
+    <child link="camera_left"/>
+  </joint>
+  <link name="camera_left">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${depth_camera_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/depthCamera.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="${depth_camera_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${depth_camera_ixx}" ixy="${depth_camera_ixy}" ixz="${depth_camera_ixz}" iyy="${depth_camera_iyy}" iyz="${depth_camera_iyz}" izz="${depth_camera_izz}" />
+    </inertial>
+  </link>
+  <joint name="camera_optical_joint_left" type="fixed">
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+    <parent link="camera_left"/>
+    <child link="camera_optical_left"/>
+  </joint>
+  <link name="camera_optical_left">
+  </link>
+
+  <!-- 右相机 -->
+  <joint name="camera_joint_right" type="fixed">
+    <origin rpy="${PI} 0.2618 ${-PI/2}" xyz="${depth_camera_right}"/>
+    <parent link="trunk"/>
+    <child link="camera_right"/>
+  </joint>
+  <link name="camera_right">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${depth_camera_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/depthCamera.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="${depth_camera_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${depth_camera_ixx}" ixy="${depth_camera_ixy}" ixz="${depth_camera_ixz}" iyy="${depth_camera_iyy}" iyz="${depth_camera_iyz}" izz="${depth_camera_izz}" />
+    </inertial>
+  </link>
+  <joint name="camera_optical_joint_right" type="fixed">
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+    <parent link="camera_right"/>
+    <child link="camera_optical_right"/>
+  </joint>
+  <link name="camera_optical_right">
+  </link>
+
+  <!-- 后下相机 -->
+  <joint name="camera_joint_rearDown" type="fixed">
+    <origin rpy="${PI} ${PI/2} 0" xyz="${depth_camera_rearDown}"/>
+    <parent link="trunk"/>
+    <child link="camera_rearDown"/>
+  </joint>
+  <link name="camera_rearDown">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${depth_camera_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/depthCamera.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="${depth_camera_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${depth_camera_ixx}" ixy="${depth_camera_ixy}" ixz="${depth_camera_ixz}" iyy="${depth_camera_iyy}" iyz="${depth_camera_iyz}" izz="${depth_camera_izz}" />
+    </inertial>
+  </link>
+  <joint name="camera_optical_joint_rearDown" type="fixed">
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+    <parent link="camera_rearDown"/>
+    <child link="camera_optical_rearDown"/>
+  </joint>
+  <link name="camera_optical_rearDown">
+  </link>
+
+  <!-- ===================== 超声波传感器 ===================== -->
+  <!-- 左超声波传感器 -->
+  <joint name="ultraSound_joint_left" type="fixed">
+    <origin rpy="0 0.2618 ${PI/2}" xyz="${ultrasound_left}"/>
+    <parent link="trunk"/>
+    <child link="ultraSound_left"/>
+  </joint>
+  <link name="ultraSound_left">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${ultrasound_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/ultraSound.dae" scale="1 1 1"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="${ultrasound_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${ultrasound_ixx}" ixy="${ultrasound_ixy}" ixz="${ultrasound_ixz}" iyy="${ultrasound_iyy}" iyz="${ultrasound_iyz}" izz="${ultrasound_izz}" />
+    </inertial>
+  </link>
+
+  <!-- 右超声波传感器 -->
+  <joint name="ultraSound_joint_right" type="fixed">
+    <origin rpy="0 0.2618 ${-PI/2}" xyz="${ultrasound_right}"/>
+    <parent link="trunk"/>
+    <child link="ultraSound_right"/>
+  </joint>
+  <link name="ultraSound_right">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${ultrasound_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/ultraSound.dae" scale="1 1 1"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="${ultrasound_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${ultrasound_ixx}" ixy="${ultrasound_ixy}" ixz="${ultrasound_ixz}" iyy="${ultrasound_iyy}" iyz="${ultrasound_iyz}" izz="${ultrasound_izz}" />
+    </inertial>
+  </link>
+
+  <!-- 面部超声波传感器 -->
+  <joint name="ultraSound_joint_face" type="fixed">
+    <origin rpy="0 0 0" xyz="${ultrasound_face}"/>
+    <parent link="trunk"/>
+    <child link="ultraSound_face"/>
+  </joint>
+  <link name="ultraSound_face">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${ultrasound_box_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://go1_description/meshes/ultraSound.dae" scale="1 1 1"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="${ultrasound_mass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${ultrasound_ixx}" ixy="${ultrasound_ixy}" ixz="${ultrasound_ixz}" iyy="${ultrasound_iyy}" iyz="${ultrasound_iyz}" izz="${ultrasound_izz}" />
+    </inertial>
+  </link>
+
+  <!-- ===================== 激光雷达 ===================== -->
+  <!-- 左激光雷达 -->
+  <joint name="camera_laserscan_joint_left" type="fixed">
+    <origin rpy="0 0.2618 0" xyz="0 0 0"/>
+    <parent link="camera_left"/>
+    <child link="camera_laserscan_link_left"/>
+  </joint>
+  <link name="camera_laserscan_link_left">
+  </link>
+
+  <!-- 右激光雷达 -->
+  <joint name="camera_laserscan_joint_right" type="fixed">
+    <origin rpy="0 0.2618 0" xyz="0 0 0"/>
+    <parent link="camera_right"/>
+    <child link="camera_laserscan_link_right"/>
+  </joint>
+  <link name="camera_laserscan_link_right">
+  </link>
+
+  <!-- ===================== 前右腿 FR (3个旋转关节) ===================== -->
+  <joint name="FR_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${FR_hip_joint_origin}"/>
+    <parent link="trunk"/>
+    <child link="FR_hip"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="${hip_damping}" friction="${hip_friction}"/>
+    <limit effort="${hip_effort_limit}" lower="${hip_lower_limit}" upper="${hip_upper_limit}" velocity="${hip_velocity_limit}"/>
+  </joint>
+  <link name="FR_hip">
+    <inertial>
+      <mass value="${hip_mass}"/>
+      <inertia ixx="${hip_ixx}" ixy="${hip_ixy}" ixz="${hip_ixz}" iyy="${hip_iyy}" iyz="${hip_iyz}" izz="${hip_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="FR_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${FR_thigh_joint_origin}"/>
+    <parent link="FR_hip"/>
+    <child link="FR_thigh"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${thigh_damping}" friction="${thigh_friction}"/>
+    <limit effort="${thigh_effort_limit}" lower="${thigh_lower_limit}" upper="${thigh_upper_limit}" velocity="${thigh_velocity_limit}"/>
+  </joint>
+  <link name="FR_thigh">
+    <inertial>
+      <mass value="${thigh_mass}"/>
+      <inertia ixx="${thigh_ixx}" ixy="${thigh_ixy}" ixz="${thigh_ixz}" iyy="${thigh_iyy}" iyz="${thigh_iyz}" izz="${thigh_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="FR_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${FR_calf_joint_origin}"/>
+    <parent link="FR_thigh"/>
+    <child link="FR_calf"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${calf_damping}" friction="${calf_friction}"/>
+    <limit effort="${calf_effort_limit}" lower="${calf_lower_limit}" upper="${calf_upper_limit}" velocity="${calf_velocity_limit}"/>
+  </joint>
+  <link name="FR_calf">
+    <inertial>
+      <mass value="${calf_mass}"/>
+      <inertia ixx="${calf_ixx}" ixy="${calf_ixy}" ixz="${calf_ixz}" iyy="${calf_iyy}" iyz="${calf_iyz}" izz="${calf_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="FR_foot_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="${FR_foot_joint_origin}"/>
+    <parent link="FR_calf"/>
+    <child link="FR_foot"/>
+  </joint>
+  <link name="FR_foot">
+    <collision name="FR_foot_collision">
+      <geometry><sphere radius="${foot_sphere_radius}"/></geometry>
+    </collision>
+    <visual><geometry><sphere radius="${foot_sphere_radius}"/></geometry></visual>
+    <inertial>
+      <mass value="${foot_mass}"/>
+      <inertia ixx="${foot_ixx}" ixy="${foot_ixy}" ixz="${foot_ixz}" iyy="${foot_iyy}" iyz="${foot_iyz}" izz="${foot_izz}"/>
+    </inertial>
+  </link>
+
+  <!-- ===================== 前左腿 FL (3个旋转关节) ===================== -->
+  <joint name="FL_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${FL_hip_joint_origin}"/>
+    <parent link="trunk"/>
+    <child link="FL_hip"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="${hip_damping}" friction="${hip_friction}"/>
+    <limit effort="${hip_effort_limit}" lower="${hip_lower_limit}" upper="${hip_upper_limit}" velocity="${hip_velocity_limit}"/>
+  </joint>
+  <link name="FL_hip">
+    <inertial>
+      <mass value="${hip_mass}"/>
+      <inertia ixx="${hip_ixx}" ixy="${hip_ixy}" ixz="${hip_ixz}" iyy="${hip_iyy}" iyz="${hip_iyz}" izz="${hip_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="FL_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${FL_thigh_joint_origin}"/>
+    <parent link="FL_hip"/>
+    <child link="FL_thigh"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${thigh_damping}" friction="${thigh_friction}"/>
+    <limit effort="${thigh_effort_limit}" lower="${thigh_lower_limit}" upper="${thigh_upper_limit}" velocity="${thigh_velocity_limit}"/>
+  </joint>
+  <link name="FL_thigh">
+    <inertial>
+      <mass value="${thigh_mass}"/>
+      <inertia ixx="${thigh_ixx}" ixy="${thigh_ixy}" ixz="${thigh_ixz}" iyy="${thigh_iyy}" iyz="${thigh_iyz}" izz="${thigh_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="FL_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${FL_calf_joint_origin}"/>
+    <parent link="FL_thigh"/>
+    <child link="FL_calf"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${calf_damping}" friction="${calf_friction}"/>
+    <limit effort="${calf_effort_limit}" lower="${calf_lower_limit}" upper="${calf_upper_limit}" velocity="${calf_velocity_limit}"/>
+  </joint>
+  <link name="FL_calf">
+    <inertial>
+      <mass value="${calf_mass}"/>
+      <inertia ixx="${calf_ixx}" ixy="${calf_ixy}" ixz="${calf_ixz}" iyy="${calf_iyy}" iyz="${calf_iyz}" izz="${calf_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="FL_foot_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="${FL_foot_joint_origin}"/>
+    <parent link="FL_calf"/>
+    <child link="FL_foot"/>
+  </joint>
+  <link name="FL_foot">
+    <collision name="FL_foot_collision">
+      <geometry><sphere radius="${foot_sphere_radius}"/></geometry>
+    </collision>
+    <visual><geometry><sphere radius="${foot_sphere_radius}"/></geometry></visual>
+    <inertial>
+      <mass value="${foot_mass}"/>
+      <inertia ixx="${foot_ixx}" ixy="${foot_ixy}" ixz="${foot_ixz}" iyy="${foot_iyy}" iyz="${foot_iyz}" izz="${foot_izz}"/>
+    </inertial>
+  </link>
+
+  <!-- ===================== 后右腿 RR (3个旋转关节) ===================== -->
+  <joint name="RR_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${RR_hip_joint_origin}"/>
+    <parent link="trunk"/>
+    <child link="RR_hip"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="${hip_damping}" friction="${hip_friction}"/>
+    <limit effort="${hip_effort_limit}" lower="${hip_lower_limit}" upper="${hip_upper_limit}" velocity="${hip_velocity_limit}"/>
+  </joint>
+  <link name="RR_hip">
+    <inertial>
+      <mass value="${hip_mass}"/>
+      <inertia ixx="${hip_ixx}" ixy="${hip_ixy}" ixz="${hip_ixz}" iyy="${hip_iyy}" iyz="${hip_iyz}" izz="${hip_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="RR_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${RR_thigh_joint_origin}"/>
+    <parent link="RR_hip"/>
+    <child link="RR_thigh"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${thigh_damping}" friction="${thigh_friction}"/>
+    <limit effort="${thigh_effort_limit}" lower="${thigh_lower_limit}" upper="${thigh_upper_limit}" velocity="${thigh_velocity_limit}"/>
+  </joint>
+  <link name="RR_thigh">
+    <inertial>
+      <mass value="${thigh_mass}"/>
+      <inertia ixx="${thigh_ixx}" ixy="${thigh_ixy}" ixz="${thigh_ixz}" iyy="${thigh_iyy}" iyz="${thigh_iyz}" izz="${thigh_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="RR_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${RR_calf_joint_origin}"/>
+    <parent link="RR_thigh"/>
+    <child link="RR_calf"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${calf_damping}" friction="${calf_friction}"/>
+    <limit effort="${calf_effort_limit}" lower="${calf_lower_limit}" upper="${calf_upper_limit}" velocity="${calf_velocity_limit}"/>
+  </joint>
+  <link name="RR_calf">
+    <inertial>
+      <mass value="${calf_mass}"/>
+      <inertia ixx="${calf_ixx}" ixy="${calf_ixy}" ixz="${calf_ixz}" iyy="${calf_iyy}" iyz="${calf_iyz}" izz="${calf_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="RR_foot_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="${RR_foot_joint_origin}"/>
+    <parent link="RR_calf"/>
+    <child link="RR_foot"/>
+  </joint>
+  <link name="RR_foot">
+    <collision name="RR_foot_collision">
+      <geometry><sphere radius="${foot_sphere_radius}"/></geometry>
+    </collision>
+    <visual><geometry><sphere radius="${foot_sphere_radius}"/></geometry></visual>
+    <inertial>
+      <mass value="${foot_mass}"/>
+      <inertia ixx="${foot_ixx}" ixy="${foot_ixy}" ixz="${foot_ixz}" iyy="${foot_iyy}" iyz="${foot_iyz}" izz="${foot_izz}"/>
+    </inertial>
+  </link>
+
+  <!-- ===================== 后左腿 RL (3个旋转关节) ===================== -->
+  <joint name="RL_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${RL_hip_joint_origin}"/>
+    <parent link="trunk"/>
+    <child link="RL_hip"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="${hip_damping}" friction="${hip_friction}"/>
+    <limit effort="${hip_effort_limit}" lower="${hip_lower_limit}" upper="${hip_upper_limit}" velocity="${hip_velocity_limit}"/>
+  </joint>
+  <link name="RL_hip">
+    <inertial>
+      <mass value="${hip_mass}"/>
+      <inertia ixx="${hip_ixx}" ixy="${hip_ixy}" ixz="${hip_ixz}" iyy="${hip_iyy}" iyz="${hip_iyz}" izz="${hip_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${hip_cylinder_length}" radius="${hip_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="RL_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${RL_thigh_joint_origin}"/>
+    <parent link="RL_hip"/>
+    <child link="RL_thigh"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${thigh_damping}" friction="${thigh_friction}"/>
+    <limit effort="${thigh_effort_limit}" lower="${thigh_lower_limit}" upper="${thigh_upper_limit}" velocity="${thigh_velocity_limit}"/>
+  </joint>
+  <link name="RL_thigh">
+    <inertial>
+      <mass value="${thigh_mass}"/>
+      <inertia ixx="${thigh_ixx}" ixy="${thigh_ixy}" ixz="${thigh_ixz}" iyy="${thigh_iyy}" iyz="${thigh_iyz}" izz="${thigh_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${thigh_cylinder_length}" radius="${thigh_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="RL_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="${RL_calf_joint_origin}"/>
+    <parent link="RL_thigh"/>
+    <child link="RL_calf"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${calf_damping}" friction="${calf_friction}"/>
+    <limit effort="${calf_effort_limit}" lower="${calf_lower_limit}" upper="${calf_upper_limit}" velocity="${calf_velocity_limit}"/>
+  </joint>
+  <link name="RL_calf">
+    <inertial>
+      <mass value="${calf_mass}"/>
+      <inertia ixx="${calf_ixx}" ixy="${calf_ixy}" ixz="${calf_ixz}" iyy="${calf_iyy}" iyz="${calf_iyz}" izz="${calf_izz}"/>
+    </inertial>
+    <visual><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></visual>
+    <collision><geometry><cylinder length="${calf_cylinder_length}" radius="${calf_cylinder_radius}"/></geometry></collision>
+  </link>
+
+  <joint name="RL_foot_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="${RL_foot_joint_origin}"/>
+    <parent link="RL_calf"/>
+    <child link="RL_foot"/>
+  </joint>
+  <link name="RL_foot">
+    <collision name="RL_foot_collision">
+      <geometry><sphere radius="${foot_sphere_radius}"/></geometry>
+    </collision>
+    <visual><geometry><sphere radius="${foot_sphere_radius}"/></geometry></visual>
+    <inertial>
+      <mass value="${foot_mass}"/>
+      <inertia ixx="${foot_ixx}" ixy="${foot_ixy}" ixz="${foot_ixz}" iyy="${foot_iyy}" iyz="${foot_iyz}" izz="${foot_izz}"/>
+    </inertial>
+  </link>
+
+  <!-- ===================== ros2_control 传动定义 (必选！) ===================== -->
+  <!-- 为12个旋转关节添加力矩传动接口 -->
+  <transmission name="FR_hip_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FR_hip_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="FR_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="FR_thigh_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FR_thigh_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="FR_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="FR_calf_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FR_calf_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="FR_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="FL_hip_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FL_hip_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="FL_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="FL_thigh_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FL_thigh_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="FL_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="FL_calf_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FL_calf_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="FL_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="RR_hip_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="RR_hip_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="RR_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="RR_thigh_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="RR_thigh_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="RR_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="RR_calf_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="RR_calf_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="RR_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="RL_hip_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="RL_hip_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="RL_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="RL_thigh_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="RL_thigh_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="RL_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="RL_calf_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="RL_calf_joint">
+      <hardwareInterface>hardware_interface/effort</hardwareInterface>
+    </joint>
+    <actuator name="RL_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>
